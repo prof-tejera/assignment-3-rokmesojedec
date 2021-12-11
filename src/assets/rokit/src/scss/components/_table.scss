@@ -1,0 +1,85 @@
+//https://codepen.io/AllThingsSmitty/pen/MyqmdM
+//Code was modified from above source 
+
+table {
+    border-collapse: collapse;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    table-layout: fixed;
+
+    th,
+    td {
+        padding: 0.625em;
+    }
+    th {
+        font-size: var(--base-font-size);
+        text-transform: uppercase;
+    }
+
+    &.first-col-heading{ 
+        tr th:first-child {
+            font-size: var(--base-font-size);
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    }
+
+    caption {
+        text-align: center;
+        font-weight: bold;
+        margin-bottom: $unit * 2;
+        @extend h3;
+    }
+}
+
+@include for-each-breakpoint-max() using ($breakpoint) {
+    .responsive-table-#{$breakpoint} {
+        border: 0;
+      
+        thead {
+            display: none;
+        }
+
+        &.first-col-heading{ 
+            tr th:first-child {
+                font-size: calc(var(--unit) * 2);
+                text-transform: uppercase;
+                text-align: right;
+                font-weight: bold;
+                display: block;
+            }
+        }
+
+        &:not(.hide-label) tr {
+            display: block;
+            margin-bottom: 0.625em;
+            td {
+                border-bottom: 1px solid #ddd;
+                display: block;
+                font-size: 0.8em;
+                text-align: right;
+                position: relative;
+                padding-left: 6rem;
+                &::before {
+                    content: attr(data-label);
+                    font-weight: bold;
+                    text-transform: uppercase;
+                    position: absolute;
+                    color: black;
+                    font-family: var(--primary-font);
+                    left: 0;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+                &:last-child {
+                    border-bottom: 0;
+                    margin-bottom: var(--unit);
+                }
+            }
+        }
+    
+    }
+}
+
+

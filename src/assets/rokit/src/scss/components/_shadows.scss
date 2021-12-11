@@ -1,0 +1,82 @@
+@use "scales";
+
+
+
+@mixin root-shadows($scale: $shadow-scale, $base-size: $base-size, $base-strength: $base-strength, $base-blur: $base-blur, $levels: $shadow-levels){
+    --base-shadow-size: #{$base-size};
+    --shadow-scale: #{$scale};
+    --base-strength-multiplier: #{$base-strength};
+    --base-blur-multiplier: #{$base-blur};
+    @for $index from 1 through $levels {
+        @if $index == 1 {
+            --shadow#{$index}: var(--base-shadow-size);
+            --shadow#{$index}-strength-multiplier: var(--base-strength-multiplier);
+            --shadow#{$index}-blur-multiplier: var(--base-strength-multiplier);
+        } @else {
+            $prev: $index - 1;
+            --shadow#{$index}: calc(var(--shadow#{$prev}) * var(--shadow-scale));
+            --shadow#{$index}-strength-multiplier: calc(var(--shadow#{$prev}-strength-multiplier) * var(--shadow-scale));
+            --shadow#{$index}-blur-multiplier: calc(var(--shadow#{$prev}-blur-multiplier) * var(--shadow-scale));
+
+        }
+    }
+    --primary-x-offset: 1px;
+    --base-blur-multiplier: 1;
+    --primary-blur: calc(var(--primary-x-offset) * var(--base-blur-multiplier));
+    --base-strength-multiplier: 0.17;
+    --strength: 1;
+    --alpha: calc(var(--strength) * var(--base-strength-multiplier));
+    --secondary-x-offset: calc(var(--primary-x-offset) * 2.3);
+    --secondary-blur: calc(var(--primary-x-offset) * var(--base-blur-multiplier) * 2);
+    --seconday-alpha: calc(var(--alpha) * 0.15);
+    --r: 0;
+    --g: 0;
+    --b: 0;
+}
+
+@mixin shadow-scales($scale: $shadow-scale, $levels: $shadow-levels) {
+    @for $index from 1 through $levels {
+        .shadow-#{$index}, .children-shadow-#{$index} > * {
+            --primary-x-offset: var(--shadow#{$index});
+            --primary-blur: calc(var(--shadow#{$index}) * var(--shadow#{$index}-blur-multiplier));
+            --base-strength-multiplier:var(--shadow#{$index}-strength-multiplier);
+            box-shadow: 
+                    var(--primary-x-offset)
+                    var(--primary-x-offset)
+                    var(--primary-blur)
+                    rgba(var(--r), var(--g), var(--b), var(--alpha)),
+                    calc(-1 * var(--primary-x-offset))
+                    calc(-1 * var(--primary-x-offset))
+                    var(--primary-blur)
+                    rgba(var(--r), var(--g), var(--b), var(--seconday-alpha))
+        } 
+        @include for-each-breakpoint() using ($breakpoint) {
+            .shadow-#{$breakpoint}-#{$index}, .children-#{$breakpoint}-shadow-#{$index} > * {
+                --primary-x-offset: var(--shadow#{$index});
+                --primary-blur: calc(var(--shadow#{$index}) * var(--shadow#{$index}-blur-multiplier));
+                --base-strength-multiplier:var(--shadow#{$index}-strength-multiplier);
+                box-shadow: 
+                        var(--primary-x-offset)
+                        var(--primary-x-offset)
+                        var(--primary-blur)
+                        rgba(var(--r), var(--g), var(--b), var(--alpha)),
+                        calc(var(--primary-x-offset) * -1)
+                        calc(var(--primary-x-offset) * -1)
+                        var(--primary-blur)
+                        rgba(var(--r), var(--g), var(--b), var(--seconday-alpha))
+            } 
+        }
+    }
+}
+
+@mixin utility-shadow($name, $type: "text", $color: #0000001f, $distance: 0.1em, $blur: 1px){
+    .#{$name}-top-left     { #{$type}-shadow: -#{$distance} -#{$distance} #{$blur} #{$color}; }
+    .#{$name}-top-right    { #{$type}-shadow:  #{$distance} -#{$distance} #{$blur} #{$color}; }
+    .#{$name}-top          { #{$type}-shadow: 0px -#{$distance} #{$blur} #{$color}; }
+    .#{$name}-bottom       { #{$type}-shadow: 0px  #{$distance} #{$blur} #{$color}; } 
+    .#{$name}-bottom-left  { #{$type}-shadow: -#{$distance} #{$distance} #{$blur} #{$color}; }
+    .#{$name}-bottom-right { #{$type}-shadow:  #{$distance} #{$distance} #{$blur} #{$color}; }
+    .#{$name}-left         { #{$type}-shadow: -#{$distance} 0px #{$blur} #{$color}; }
+    .#{$name}-right        { #{$type}-shadow:  #{$distance} 0px #{$blur} #{$color}; }
+    .no-#{$name}           { #{$type}-shadow: none; }
+}

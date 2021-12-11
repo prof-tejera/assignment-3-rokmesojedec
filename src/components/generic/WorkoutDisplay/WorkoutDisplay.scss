@@ -1,0 +1,14 @@
+.workout-display {
+    width: 600px;
+    margin: 0 auto;
+    border: 1px solid gray;
+    height: 100px;
+    overflow: hidden;
+    display:flex; 
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    .workout {
+
+    }
+}

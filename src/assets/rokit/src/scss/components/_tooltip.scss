@@ -1,0 +1,108 @@
+// Inspired by and source: https://blog.logrocket.com/creating-beautiful-tooltips-with-only-css/
+
+[data-tooltip] {
+    position: relative;
+    &:hover:before,
+    &:hover:after {
+        position: absolute;
+        display: inline-block;
+        animation: button-hover 0.45s;
+        font-weight: normal;
+        text-align: center;
+        z-index: 1000;
+    }
+    &:before {
+        content: attr(data-tooltip);
+        display: none;
+        color: $tooltip-text-color;
+        background: $tooltip-bg-color;
+        padding: $unit * 0.5 $unit;
+        border-radius: 4px;
+        min-width: 10rem;
+        width: 100%;
+    }
+    &:after {
+        display: none;
+        content: "";
+        width: 0px;
+        height: 0px;
+        border: 5px solid $tooltip-bg-color;
+        border-color: transparent transparent $tooltip-bg-color transparent;
+    }
+
+    &.static-tooltip {
+        &:before,
+        &:after {
+            position: absolute;
+            display: inline-block;
+            animation: button-hover 0.45s;
+        }
+    }
+}
+
+[data-tooltip-top] {
+    @extend [data-tooltip];
+    &:before {
+        content: attr(data-tooltip-top);
+        top: $tooltip-offset;
+        left: 50%;
+        bottom: auto;
+        transform: translate(-50%, -100%);
+    }
+    &:after {
+        left: 50%;
+        top: $tooltip-offset;
+        transform: translate(-50%, -1px);
+        border-color: $tooltip-bg-color transparent transparent transparent;
+    }
+}
+
+[data-tooltip-left] {
+    @extend [data-tooltip];
+    &:before {
+        content: attr(data-tooltip-left);
+        top: 50%;
+        left: $tooltip-offset;
+        bottom: auto;
+        transform: translate(-100%, -50%);
+    }
+    &:after {
+        left: $tooltip-offset;
+        top: 50%;
+        transform: translate(-1px, -50%);
+        border-color: transparent transparent transparent $tooltip-bg-color;
+    }
+}
+
+[data-tooltip-right] {
+    @extend [data-tooltip];
+    &:before {
+        content: attr(data-tooltip-right);
+        top: 50%;
+        right: $tooltip-offset;
+        bottom: auto;
+        transform: translate(100%, -50%);
+    }
+    &:after {
+        left: auto;
+        right: $tooltip-offset;
+        top: 50%;
+        transform: translate(1px, -50%);
+        border-color: transparent $tooltip-bg-color transparent transparent;
+    }
+}
+
+[data-tooltip-bottom] {
+    @extend [data-tooltip];
+    &:before {
+        content: attr(data-tooltip-bottom);
+        bottom: $tooltip-offset;
+        left: 50%;
+        transform: translate(-50%, 100%);
+    }
+    &:after{
+        left: 50%;
+        bottom: $tooltip-offset;
+        transform: translate(-50%, 1px);
+    }
+}

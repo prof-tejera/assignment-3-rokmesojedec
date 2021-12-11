@@ -1,0 +1,82 @@
+
+.fixed {
+    position: fixed;
+}
+.relative {
+    position: relative;
+}
+
+@include for-each-breakpoint() using ($breakpoint) {
+    .fixed-#{$breakpoint} {
+        position: fixed;
+    }
+}
+
+.grid {
+    --gap: calc(var(--unit) / 2);
+    --column-span: 1;
+
+    display: grid;
+    margin: var(--layout-margin);
+    grid: {
+        gap: var(--gap);
+    }
+    grid-template-columns: repeat(var(--column-count), 1fr);
+    grid-template-rows: auto 1fr;
+
+    & > * {
+        grid-column-end: span var(--column-span);
+    }
+
+    $columnWidth: 1, 2, 3, 4, 6, 12;
+    $sizes: "xs", "sm", "md", "lg", "xl", "xxl";
+
+    &.last-cell-full-width > *:last-child{
+        grid-column-end: span var(--column-count);
+    }
+ 
+    @for $colSpan from 1 through $grid-column-count {
+        &.grid-col-span-#{$colSpan} {
+            & > * {
+                --column-span: #{$colSpan};
+            }
+        }
+        &.gap-#{$colSpan}{
+            --gap: calc(var(--unit) * #{$colSpan});
+        }
+    }
+
+    @include for-each-breakpoint() using ($breakpoint) {
+        &.last-cell-#{$breakpoint}-full-width > *:last-child{
+            grid-column-end: span var(--column-count);
+        }
+        @for $colSpan from 1 through $grid-column-count {
+            &.grid-#{$breakpoint}-col-span-#{$colSpan} {
+                & > * {
+                    --column-span: #{$colSpan};
+                }
+            }
+            &.col-#{$breakpoint}-span-#{$colSpan} {
+                --column-span: #{$colSpan};
+            }
+            & .col-#{$breakpoint}-span-#{$colSpan} {
+                --column-span: #{$colSpan};
+            }
+            &.gap-#{$breakpoint}-#{$colSpan}{
+                --gap: calc(var(--unit) * #{$colSpan});
+            }
+        }
+    }
+
+    @for $colSpan from 1 through $grid-column-count {
+        & .col-span-#{$colSpan} {
+            --column-span: #{$colSpan};
+        }
+    }
+}
+
+@for $i from -1 to 100 {
+    .z-#{$i}{
+        z-index: #{$i};
+    }
+}

@@ -1,0 +1,17 @@
+.tabata {
+    width: 100%;
+    .tabata-progress-panel {
+        width: 100%;
+        display: flex;
+        justify-content: space-evenly;
+    }
+
+    .tabata-progress-wrapper {
+        text-align: center;
+        .tabata-label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: var(--gray-10-color);
+        }
+    }
+}

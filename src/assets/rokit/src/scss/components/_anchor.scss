@@ -1,0 +1,22 @@
+a {
+    --hover-color: var(--primary-color);
+    --link-text-color: var(--dark-color);
+    --link-hover-color: var(--link-text-color);
+    text-decoration: none;
+    display: inline-block;
+    position: relative;
+    color: unset;
+    border-bottom: 0.25em inset var(--hover-color);
+   
+    &:not(.btn):hover{
+        box-shadow:inset 0px 0px 0px 1em var(--hover-color);
+        color: var(--link-hover-color);
+    }
+
+    @each $bg, $color in $bgcolors-textcolor-map{ 
+        &.hover-#{$bg} {
+            --hover-color: var(--#{$bg}-color);
+            --link-hover-color: var(#{$color});
+        }
+    }
+}

@@ -1,0 +1,38 @@
+@function get-scaled-value($base, $scale, $multiplier: false) {
+    $scaledValue: $base;
+    @if $multiplier {
+        @for $index from 1 through $multiplier {
+            $scaledValue: $scaledValue * $scale;
+        }
+    }
+    @return $scaledValue;
+}
+
+@mixin root-typography($scale: 1.333){
+    --scale: #{$scale};
+    --base: calc(var(--base-font-size) * var(--scale));
+    @for $index from 6 through 1 {
+        @if $index == 6 {
+            --h#{$index}: var(--base);
+        } @else {
+            $prev: $index + 1;
+            --h#{$index}: calc(var(--h#{$prev}) * var(--scale));
+        }
+    }
+}
+
+@mixin typography-rules(){
+    @for $index from 6 through 1 {
+        h#{$index} {
+            font-size: var(--h#{$index});
+        }
+    }
+    small,
+    .small {
+        font-size: calc(var(--base) / var(--scale));
+    }
+    p, div, section, header, footer, nav {
+        font-size: var(--base);
+    }
+}
+

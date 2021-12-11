@@ -1,0 +1,33 @@
+.app-button {
+    transition: all 0.3s linear;
+    border: none;
+    outline: none;
+    background: none;
+    cursor: pointer;
+    color: rgb(182, 182, 182);
+    span {
+        vertical-align: middle;
+    }
+    &:hover {
+        color: black;
+        border-radius: 50px;
+        background: #e0e0e0;
+        box-shadow: 5px 5px 15px #afafaf, -5px -5px 15px #ffffff;
+    }
+
+    &.selected {
+        border-radius: 19px;
+        background: #e0e0e0;
+        box-shadow: 8px 8px 16px #cccccc, -8px -8px 16px #f4f4f4;
+    }
+
+    &:active {
+        border-radius: 50px;
+        background: linear-gradient(145deg, #cacaca, #f0f0f0);
+        box-shadow: 5px 5px 15px #afafaf, -5px -5px 15px #ffffff;
+    }
+
+    &.bold {
+        font-weight: bold;
+    }
+}

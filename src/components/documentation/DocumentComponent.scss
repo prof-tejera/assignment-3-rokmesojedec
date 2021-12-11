@@ -1,0 +1,27 @@
+.table-wrapper {
+  h4 {
+    font-family: var(--code-font);
+    font-weight: bold;
+    color: var(--code-color);
+  }
+  .component-container {
+    display: flex;
+    align-items: center;
+  }
+  & > div {
+    display: flex;
+    table {
+      tr,
+      td,
+      th {
+        border: none;
+
+        &.code-font {
+          font-family: var(--code-font);
+          font-weight: bold;
+          color: var(--code-color);
+        }
+      }
+    }
+  }
+}

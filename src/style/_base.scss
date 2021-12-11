@@ -1,0 +1,161 @@
+#root,
+body,
+html {
+    padding: 0;
+    margin: 0;
+    overflow-x: inherit;
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    margin: 0;
+    background-repeat: no-repeat !important;
+    background-attachment: fixed !important;
+    background-color: #e0e0e0;
+}
+
+.white-bg {
+    background: var(--light-color) !important;
+}
+
+.width-100px {
+    width: 100px;
+}
+
+#root {
+    header {
+        background-size: 100vw 100vh;
+        background-color: #141414;
+        box-shadow: 0 20px 30px #73737396;
+    }
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.ButtonsPanel {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#root {
+    .size-48 {
+        font-size: 32px;
+    }
+
+    nav {
+        strong {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        ul {
+            margin: 0 0 0 auto;
+            li {
+                font-size: 1.5rem;
+                display: flex;
+                border-radius: 1rem;
+            }
+        }
+    }
+}
+
+:root {
+    --timer-font-color: #ff9200;
+}
+
+.congrats {
+    width: 300px;
+    background: $neu-bg;
+    border-radius: 25px;
+    background: #e0e0e0;
+    box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+    text-align: center;
+    padding: 1rem 2rem;
+    margin: 5rem auto 3rem auto;
+    font-weight: bold;
+}
+
+// Generated with https://neumorphism.io/#ededed
+.timer {
+    background: $neu-bg;
+    // border-radius: 50%;
+    // // & > .overlay{
+    // //     box-shadow:;
+    // // }
+    // box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+
+    border-radius: 50%;
+    background: #e0e0e0;
+    box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+}
+
+// Generated with https://neumorphism.io/#ededed
+.tiny-timer {
+    border-radius: 50%;
+    background: #e0e0e0;
+    box-shadow: inset 11px 11px 22px #d0d0d0, inset -11px -11px 22px #f0f0f0;
+    .InnerCircle {
+        box-shadow: inset 11px 11px 22px #d0d0d0, inset -11px -11px 22px #f0f0f0;
+    }
+
+    // border-radius: 50%;
+    // background: #e0e0e0;
+    // box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
+}
+
+.panel-morph {
+    border-radius: 35px;
+    background: #e0e0e0;
+    box-shadow: inset 12px 12px 21px #d0d0d0, inset -12px -12px 21px #f0f0f0;
+}
+
+a {
+    span {
+        vertical-align: middle;
+    }
+}
+
+.workout-panel{
+    display: flex;
+    justify-content: space-evenly;
+    margin: 5rem auto 0 auto;
+    width: 400px;
+    background: #e0e0e0;
+    border-radius: 25px;
+    box-shadow: inset 11.41px 11.41px 15px #d4d4d4, inset -11.41px -11.41px 15px #ececec;
+    padding: 1.5rem 5rem;
+}
+
+
+.buttons-panel {
+    @extend .workout-panel;
+    justify-content: space-between;
+
+    .round-button {
+        height: 3rem;
+        width: 3rem;
+        border-radius: 50%;
+        padding: 0;
+    }
+
+    .check-green {
+        color: var(--success-color);
+    }
+}
+
+
+//https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}

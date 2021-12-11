@@ -1,0 +1,99 @@
+@use "components/scales";
+@import "components/typescale";
+
+$heading-shadow-class-name: "text-shadow-left";
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font: {
+        family: var(--heading-font);
+    }
+    @if $heading-shadow-class-name != null {
+        @extend .#{$heading-shadow-class-name};
+    }
+}
+
+.muted {
+    color: var(--font-muted-color);
+}
+
+.bold {
+    font-weight: bold;
+}
+
+code {
+    background: var(--primary-color);
+    color: var(--code-color);
+    font-family: var(--code-font);
+    padding: calc(var(--unit) * 4);
+    white-space: pre-wrap;
+    display: block;
+    @extend .shadow-4;
+    @extend .rounded;
+    &.inline {
+        display: inline-block;
+        padding: calc(var(--unit) / 2);
+    }
+}
+
+.code-inline { 
+    font-family: var(--code-font);
+    font-weight: bold;
+    color: var(--code-color);
+}
+
+$font-weights: 100, 300, 400, 500, 700;
+
+@each $weight in $font-weights {
+    .weight-#{$weight} {
+        font-weight: #{$weight};
+    }
+}
+
+@for $i from 1 through 10 {
+    .letter-spacing-#{$i} {
+        letter-spacing: #{$i}px;
+    }
+}
+
+@include typography-rules();
+
+@each $scale, $value in scales.$map {
+    .typescale-#{$scale} {
+        @include root-typography($value);
+    }
+}
+
+$text-alignments: "left", "right", "center", "justify";
+@each $alignment in $text-alignments {
+    .text-#{$alignment} {
+        text-align: #{$alignment};
+    }
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+.lowercase {
+    text-transform: lowercase;
+}
+.uppercase {
+    text-transform: uppercase;
+}
+
+@include for-each-breakpoint() using ($breakpoint) {
+    @each $scale, $value in scales.$map {
+        .typescale-#{$breakpoint}-#{$scale} {
+            @include root-typography($value);
+        }
+    }
+    @each $alignment in $text-alignments {
+        .text-#{$breakpoint}-#{$alignment} {
+            text-align: #{$alignment};
+        }
+    }
+}

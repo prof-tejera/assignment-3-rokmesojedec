@@ -1,0 +1,61 @@
+@use "sass:map";
+
+// Breakpoint Variables
+//-----------------------------------------------------------------------//
+/* Source: https://getbootstrap.com/docs/5.0/layout/breakpoints/         */
+
+$xs:  576px;  // xs  = less than 576px
+$sm:  576px;  // sm  = more than 576px
+$md:  768px;  // md  = more than 768px
+$lg:  992px;  // lg  = more than 992px
+$xl:  1200px; // xl  = more than 1200px
+$xxl: 1400px; // xxl = more than 1400px
+
+// If you are going to add / remove breakpoints
+// Make sure to reflect additional or fewer breakpoints in maps below 
+
+// Maps below are used to create responsive classes accross the framework
+$breakpoint-map: ("xs": $xs, "sm": $sm, "md": $md, "lg": $lg, "xl": $xl, "xxl": $xxl);
+$breakpoint-bound: ("xs": "max", "sm": "min", "md": "min", "lg": "min", "xl": "min", "xxl": "min");
+$breakpoint-flexbasis: ("xs": 50%, "sm": 50%, "md": 25%, "lg": 20%, "xl": 16.66%, "xxl": 14.22%);
+
+// loops through each breakpoint in breakpoint-map list
+// this mixin is used to create all the responive rule sets in the framework
+@mixin for-each-breakpoint(){
+    @each $breakpoint, $size in $breakpoint-map{
+        @include breakpoint($breakpoint){
+            @content($breakpoint);
+        }
+    }
+}
+
+// loops through each breakpoint in breakpoint-map list
+// this mixin is used to create all the responive rule sets in the framework
+@mixin for-each-breakpoint-max(){
+    @each $breakpoint, $size in $breakpoint-map{
+        @include breakpoint-max($breakpoint) {
+            @content($breakpoint);
+        }
+    }
+}
+
+// Creates breakpoint @media with appropriate max / min width rule
+@mixin breakpoint($breakpoint) {
+    @media(#{get-breakpoint-bound($breakpoint)}-width: #{get-breakpoint-value($breakpoint)}){
+        @content;
+    }    
+}
+
+@mixin breakpoint-max($breakpoint) {
+    @media(max-width: #{get-breakpoint-value($breakpoint)}){
+        @content;
+    }    
+}
+
+@function get-breakpoint-value($size){
+   @return map.get($breakpoint-map, $size);
+}
+
+@function get-breakpoint-bound($size){
+    @return map.get($breakpoint-bound, $size);
+ }

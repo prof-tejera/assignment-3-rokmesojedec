@@ -1,0 +1,223 @@
+@use "breakpoints";
+
+%navAnchorOverride {
+    border: none;
+    &:hover,
+    a:hover {
+        // text-decoration: underline;
+        box-shadow: none !important;
+    }
+
+    color: inherit !important;
+    text: {
+        decoration: none;
+    }
+
+    &::after,
+    &:hover::after,
+    &:active::after {
+        display: none;
+    }
+}
+
+.branding {
+    font-weight: bold;
+    font-size: 200%;
+    display: inline-block;
+    padding: {
+        top: var(--unit);
+        bottom: var(--unit);
+    }
+    margin: {
+        top: var(--unit);
+        bottom: var(--unit);
+    }
+
+    @extend %navAnchorOverride;
+    &:hover {
+        text-decoration: none;
+    }
+}
+
+$nav-border-radius: 5px;
+nav {
+    display: block;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    &.nav-flex > ul {
+        &::after {
+            content: "";
+            flex: auto;
+        }
+        & > li {
+            padding: var(--unit);
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: calc(3 * var(--unit));
+            flex-basis: 25%;
+            background-color: transparent;
+            position: relative;
+
+            ul {
+                li {
+                    font-weight: initial;
+                    text-transform: initial;
+                }
+            }
+        }
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding-left: 0;
+        padding-bottom: 0;
+        ul,
+        ul li {
+            padding-left: 0;
+            padding-bottom: 0;
+        }
+    }
+    &.center ul {
+        justify-content: center;
+    }
+    &.nav-light {
+        ul li a {
+            color: var(--light-color);
+        }
+    }
+    a.active {
+        font-weight: bold;
+        &:before {
+            content: "\2013"+ " ";
+        }
+    }
+    ul {
+        display: block;
+        padding: 0;
+        margin: 0;
+        list-style: none;
+        &.center {
+            justify-content: center;
+        }
+        li {
+            display: block;
+            align-items: center;
+            position: relative;
+            padding: var(--unit);
+            font: {
+                family: var(--heading-font);
+            }
+            a {
+                @extend %navAnchorOverride;
+            }
+            ul {
+                display: block;
+                position: static;
+                background: unset;
+                li a {
+                    color: unset !important;
+                }
+            }
+        }
+    }
+
+    &.nav-main {
+        display: flex;
+        & > ul {
+            display: flex;
+            flex-wrap: initial;
+            position: relative;
+
+            & > li:hover {
+                // border-radius: $nav-border-radius;
+                border-radius: $nav-border-radius $nav-border-radius 0 0;
+
+                color: var(--link-hover-color);
+                background-color: var(--hover-color);
+                transition: background-color 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+            }
+
+            li {
+                a {
+                    white-space: nowrap;
+                }
+                margin: 0;
+                padding: var(--unit);
+                width: initial;
+                font-weight: initial;
+                text-transform: initial;
+
+                &:hover a ~ ul,
+                &:hover ~ ul:hover {
+                    display: block;
+                }
+                & a ~ ul {
+                    border-radius: 0 0 $nav-border-radius $nav-border-radius;
+                    top: 100%;
+                    left: 0;
+                    position: absolute;
+                    display: none;
+                    animation: fade-in 0.3s;
+                    background-color: var(--hover-color);
+                    box-shadow: 0 5px 5px rgba(0, 0, 0, 0.007), 7px 7px 7px rgba(0, 0, 0, 0.1),
+                        -7px 7px 7px rgba(0, 0, 0, 0.1);
+                    li {
+                        padding: calc(var(--unit) / 2) calc(2 * var(--unit));
+                        display: list-item;
+                    }
+                }
+            }
+        }
+    }
+
+    @include for-each-breakpoint() using ($breakpoint) {
+        &.nav-#{$breakpoint} {
+            display: flex;
+            & > ul {
+                display: flex;
+                flex-wrap: initial;
+                position: relative;
+
+                & > li:hover {
+                    // border-radius: $nav-border-radius;
+                    border-radius: $nav-border-radius $nav-border-radius 0 0;
+
+                    color: var(--link-hover-color);
+                    background-color: var(--hover-color);
+                    transition: background-color 0.3s cubic-bezier(0.39, 0.575, 0.565, 1);
+                }
+
+                li {
+                    a {
+                        white-space: nowrap;
+                    }
+                    margin: 0;
+                    padding: var(--unit);
+                    width: initial;
+                    font-weight: initial;
+                    text-transform: initial;
+
+                    &:hover a ~ ul,
+                    &:hover ~ ul:hover {
+                        display: block;
+                    }
+                    & a ~ ul {
+                        border-radius: 0 0 $nav-border-radius $nav-border-radius;
+                        top: 100%;
+                        left: 0;
+                        position: absolute;
+                        display: none;
+                        animation: fade-in 0.3s;
+                        background-color: var(--hover-color);
+                        box-shadow: 0 5px 5px rgba(0, 0, 0, 0.007), 7px 7px 7px rgba(0, 0, 0, 0.1),
+                            -7px 7px 7px rgba(0, 0, 0, 0.1);
+                        li {
+                            padding: calc(var(--unit) / 2) calc(2 * var(--unit));
+                            display: list-item;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

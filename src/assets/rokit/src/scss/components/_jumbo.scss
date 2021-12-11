@@ -1,0 +1,71 @@
+.jumbo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--light-color);
+    position: relative;
+    overflow: hidden;
+
+    .overlay {
+        z-index: 1;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        overflow: hidden;
+    }
+
+    .cover {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    img{
+        position: absolute;
+        top:50%;
+        left:50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+    }
+
+    .content{
+        z-index: 2;
+    }
+
+    &.golden-ratio-left{
+        display: block;
+        .content{
+            position: absolute;
+            left: 38.2%;
+            top: 38.2%;
+        }
+    }
+    &.golden-ratio-right{
+        display: block;
+        .content{
+            position: absolute;
+            right: 38.2%;
+            top: 38.2%;
+        }
+    }
+}
+
+@mixin bg-image($img-url, $class-name){
+    .#{$class-name}{
+        @extend .overlay;
+        @extend .cover;
+        background-image: url(#{$img-url});
+    }
+}
+
+@mixin cover-image($img-url, $class-name){
+    .#{$class-name}{
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-image: url(#{$img-url});
+        @content;
+    }
+}

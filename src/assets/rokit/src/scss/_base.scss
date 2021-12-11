@@ -1,0 +1,86 @@
+@use "components/typescale" as font;
+
+:root{
+    @include root-colors();
+    @include root-variables();
+    @include root-buttons();
+    @include root-shadows();
+    @include font.root-typography();
+}
+
+*, ::before, ::after{
+    box-sizing: border-box;
+}
+
+body,
+html {
+    padding: 0;
+    margin: var(--layout-margin);;
+    font: {
+        size: var(--base-font-size);
+        family: var(--primary-font);
+    }
+    color: var(--font-color);
+    overflow-x: hidden;
+}
+
+table {
+    tr{
+        th,td{
+            padding: $unit;
+        }
+    }
+}
+
+ol, ul{
+    li {
+        padding: $unit 0;
+    }
+}
+
+.overflow-x{
+    overflow-x: auto;
+}
+
+header, section, article, aside, footer, nav, div, p, footer {
+    margin: var(--layout-margin);
+    padding: var(--layout-padding);
+}
+
+ul {
+    &.no-bullets {
+        list-style: none;
+        padding: 0;
+    }
+}
+
+@include shadow-scales($shadow-scale, $shadow-levels);
+@include utility-shadow("box-shadow",  "box", #0000001f, $box-shadow-length);
+@include utility-shadow("text-shadow", "text");
+@include color-classes();
+
+@include animation-series("slide-down",  ("opacity": 0, "transform": translateY(-1 * $animation-translate-distance)), ("opacity": 1, "transform": translateY(0)), $animation-delay-steps, $animation-base-length, $animation-delay-multiplier);
+@include animation-series("slide-up",    ("opacity": 0, "transform": translateY( $animation-translate-distance)), ("opacity": 1, "transform": translateY(0)), $animation-delay-steps, $animation-base-length, $animation-delay-multiplier);
+@include animation-series("slide-left",  ("opacity": 0, "transform": translateX(-1 * $animation-translate-distance)), ("opacity": 1, "transform": translateX(0)), $animation-delay-steps, $animation-base-length, $animation-delay-multiplier);
+@include animation-series("slide-right", ("opacity": 0, "transform": translateX( $animation-translate-distance)), ("opacity": 1, "transform": translateX(0)), $animation-delay-steps, $animation-base-length, $animation-delay-multiplier);
+
+@include animation-series("slide-down-fast",  ("opacity": 0, "transform": translateY(-1 * $animation-translate-distance)), ("opacity": 1, "transform": translateY(0)), $animation-delay-steps, $animation-base-length, $animation-fast-delay-multiplier);
+@include animation-series("slide-up-fast",    ("opacity": 0, "transform": translateY( $animation-translate-distance)), ("opacity": 1, "transform": translateY(0)), $animation-delay-steps, $animation-base-length, $animation-fast-delay-multiplier);
+@include animation-series("slide-left-fast",  ("opacity": 0, "transform": translateX(-1 * $animation-translate-distance)), ("opacity": 1, "transform": translateX(0)), $animation-delay-steps, $animation-base-length, $animation-fast-delay-multiplier);
+@include animation-series("slide-right-fast", ("opacity": 0, "transform": translateX( $animation-translate-distance)), ("opacity": 1, "transform": translateX(0)), $animation-delay-steps, $animation-base-length, $animation-fast-delay-multiplier);
+
+@include animation-series("slide-down-slow",  ("opacity": 0, "transform": translateY(-1 * $animation-translate-distance)), ("opacity": 1, "transform": translateY(0)), $animation-delay-steps, $animation-base-length, $animation-slow-delay-multiplier);
+@include animation-series("slide-up-slow",    ("opacity": 0, "transform": translateY( $animation-translate-distance)), ("opacity": 1, "transform": translateY(0)), $animation-delay-steps, $animation-base-length, $animation-slow-delay-multiplier);
+@include animation-series("slide-left-slow",  ("opacity": 0, "transform": translateX(-1 * $animation-translate-distance)), ("opacity": 1, "transform": translateX(0)), $animation-delay-steps, $animation-base-length, $animation-slow-delay-multiplier);
+@include animation-series("slide-right-slow", ("opacity": 0, "transform": translateX( $animation-translate-distance)), ("opacity": 1, "transform": translateX(0)), $animation-delay-steps, $animation-base-length, $animation-slow-delay-multiplier);
+
+@include animation-series("animate-text-shadow-left",    ("text-shadow": 0 0 1px #0000001f), ("text-shadow": -0.1em  0 1px #0000001f), $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-text-shadow-right",   ("text-shadow": 0 0 1px #0000001f), ("text-shadow":  0.1em  0 1px #0000001f), $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-text-shadow-down",    ("text-shadow": 0 0 1px #0000001f), ("text-shadow":  0  0.1em 1px #0000001f), $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-text-shadow-up",      ("text-shadow": 0 0 1px #0000001f), ("text-shadow":  0 -0.1em 1px #0000001f), $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+
+@include animation-series("animate-box-shadow-left",     ("box-shadow": 0 0 1px #0000001f), ("box-shadow": -$box-shadow-length 0 1px #0000001f),    $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-box-shadow-right",    ("box-shadow": 0 0 1px #0000001f), ("box-shadow":  $box-shadow-length 0 1px #0000001f),    $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-box-shadow-bottom",   ("box-shadow": 0 0 1px #0000001f), ("box-shadow":  0  $box-shadow-length 1px #0000001f),   $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-box-shadow-top",      ("box-shadow": 0 0 1px #0000001f), ("box-shadow":  0 (-$box-shadow-length) 1px #0000001f), $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);
+@include animation-series("animate-box-shadow-top-left", ("box-shadow": 0 0 1px #0000001f), ("box-shadow":  (-$box-shadow-length) (-$box-shadow-length) 1px #0000001f), $animation-delay-steps, $shadow-animation-length, $animation-delay-multiplier);

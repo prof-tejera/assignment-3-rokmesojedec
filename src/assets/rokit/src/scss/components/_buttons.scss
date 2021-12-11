@@ -1,0 +1,161 @@
+// Button Sizes
+//-----------------------------------------------------------------------//
+$button-sizes: "xxs", "xs", "sm", "md", "lg", "xl", "xxl"; // Do not modify
+$btn-border-width: 0.1em;
+@mixin root-buttons 
+    ($btn-size-factor: 1.25,  // modifier for bigger button sizes
+     $btn-border-radius: 4px,  // global button border radius
+     $btn-font-weight: 300)    // global button font weight
+{   
+    --btn-size-factor: #{$btn-size-factor};
+    --btn-font-weight: #{$btn-font-weight};
+    --btn-xxs: calc(var(--btn-xs) / var(--btn-size-factor));
+    --btn-xs: calc(var(--btn-sm) / var(--btn-size-factor));
+    --btn-sm: calc(var(--btn-md) / var(--btn-size-factor));
+    --btn-md: var(--base-font-size);
+    --btn-lg: calc(var(--btn-md) * var(--btn-size-factor));
+    --btn-xl: calc(var(--btn-lg) * var(--btn-size-factor));
+    --btn-xxl: calc(var(--btn-xl) * var(--btn-size-factor));
+    --btn-font-size: var(--btn-md);
+    --btn-border-radius: #{$btn-border-radius};
+    --btn-border-width: #{$btn-border-width};
+}
+
+.btn {
+    // removes transparent overlay displayed when tapping on a button on an iOS touch device
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    --btn-color: var(--dark-color);
+    --btn-text-color: var(--light-color);
+    position: relative;
+    padding: calc(var(--btn-font-size) * 0.75) calc(var(--btn-font-size) * 2);
+    color: var(--btn-color);
+    font-weight: var(--btn-font-weight); 
+    border: none;
+    border-radius: var(--btn-border-radius);
+    font-family: var(--primary-font);
+    font-size: var(--btn-font-size);
+    background: none;
+    cursor: pointer;
+    user-select: none;
+    display: inline-block;
+    text-decoration: none;
+
+    // Remove MacOS Outline https://usabilitypost.com/2008/10/15/css-tip-remove-mac-osx-glowing-blue-outlin-for-custom-styled-input-fields/
+    &:focus { outline: none; }
+    &.raised {
+        @extend .shadow-6 !optional;
+        &:active {
+            transform: translate(1px, 1px);
+            @extend .shadow-3 !optional;
+        }
+    }
+
+    &.flat {
+        font-weight: bold;
+        box-shadow: none;
+        &:not([disabled]):hover{
+            transition: color 0.35s ease, background 0.35s ease;
+            color: var(--btn-text-color);
+            background-color: var(--btn-color);
+            border-color: var(--btn-color);
+        }
+        &:hover:after,
+        &:active:after{
+         display: none;
+        }
+    }
+    
+    &[disabled]{
+        cursor: not-allowed;
+        background-color: var(--gray-3-color);
+        color:var(--gray-2-color);
+        &.flat{
+            background: none !important;
+        }
+        &.flat:hover{
+            box-shadow: none;
+        }
+        &:hover:after, &:active:after {
+            display:none;
+        }
+    }
+
+    span {
+        vertical-align: bottom;
+        font-size: var(--btn-font-size);
+    }
+
+    &.outline {
+        --outline-padding:  calc((calc(-1 * var(--btn-border-width)) + var(--btn-font-size)) * 0.75) calc((calc(-1 * var(--btn-border-width)) + var(--btn-font-size)) * 2);
+        padding: var(--outline-padding);
+        font-weight: bold;
+        background: none; 
+        border-width: 0.2em;
+        border-style: solid;
+        &:not([disabled]):hover{
+            transition: color 0.35s ease, background 0.35s ease;
+            color: var(--btn-text-color);
+            background-color: var(--btn-color);
+            border-color: var(--btn-color);
+        }
+        &:hover:after,
+        &:active:after{
+         display: none !important;
+        }
+    }
+
+    &:after {
+        display: none;
+    }
+
+    &:hover:after,
+    &:active:after {
+        content: "";
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: 100%;
+        background: radial-gradient(#79797948, #00000036);
+        z-index: 1;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: var(--btn-border-radius);
+    }
+
+    &:active {
+        transform: translate(1px, 1px);
+    }
+
+    &.btn-dark:hover:after, &.btb-dark:active:active{
+        background: radial-gradient(#ffffff48, #e0e0e036);
+    }
+
+    &:hover:after {
+        animation: button-hover 0.35s ease;
+    }
+
+    @each $size in $button-sizes {
+        &.btn-#{$size}{
+            --btn-font-size: var(--btn-#{$size});
+        }
+    }
+
+    @include for-each-breakpoint() using ($breakpoint) {
+        @each $size in $button-sizes {
+            &.btn-#{$breakpoint}-#{$size}{
+                --btn-font-size: var(--btn-#{$size});
+            }
+        }
+    }
+}
+
+@keyframes button-hover {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;
+    }
+}

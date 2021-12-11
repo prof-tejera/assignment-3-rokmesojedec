@@ -1,0 +1,175 @@
+@use "sass:map";
+@use "sass:color";
+
+// Generated from https://coolors.co/70d6ff-ff70a6-ff9770-ffd670-e9ff70
+$baby-blue: #00b7ff;
+$french-pink: #ff70a6ff;
+$light-salmon: #c4471aff;
+$orange-yellow-crayola: #ff9200ff;
+$mindaro: #e9ff70ff;
+//------------------------------------------------------------------------
+$green: #187201;
+$black: black;
+$gray: #8f8f8f;
+$dark-transparent: #000000e3;
+$white: white;
+$dark-blue: #0031cb;
+
+// Gray Scale
+//-----------------------------------------------------------------------//
+// Generated with  https://gka.github.io/palettes/#/12|s|141414,c2c2c2,ffffff|ffffe0,ff005e,93003a|1|0 
+
+$dark:     #141414;
+$gray-10:  #252525;
+$gray-9:   #373737;
+$gray-8:   #4b4b4b;
+$gray-7:   #5f5f5f;
+$gray-6:   #747474;
+$gray-5:   #8a8a8a;
+$gray-4:   #a0a0a0;
+$gray-3:   #b7b7b7;
+$gray-2:   #cfcfcf;
+$gray-1:   #e7e7e7;
+$light:    #ffffff;
+
+$grayscale: (
+    "dark" :  #141414,
+    "gray-10":#252525,
+    "gray-9": #373737,
+    "gray-8": #4b4b4b,
+    "gray-7": #5f5f5f,
+    "gray-6": #747474,
+    "gray-5": #8a8a8a,
+    "gray-4": #a0a0a0,
+    "gray-3": #b7b7b7,
+    "gray-2": #cfcfcf,
+    "gray-1": #e7e7e7,
+    "light":  #ffffff
+);
+
+// Theme Variables
+//-----------------------------------------------------------------------//
+
+// Modifiy to create custom theme
+$muted: map.get($grayscale, "gray-6");
+$text-color: map.get($grayscale, "dark");
+$primary: $baby-blue;
+$primary-light: mix(white, $primary, 25%);
+$primary-dark: darken($primary, 25%);
+$secondary: $light-salmon;
+$secondary-light: mix(white, $secondary, 25%);
+$secondary-dark: darken($secondary, 25%);
+$success: $green;
+$warning: $orange-yellow-crayola;
+$danger: $french-pink;
+$code-color: $dark-blue;
+$overlay-color: color.adjust(map.get($grayscale, "dark"), $alpha: -0.4);;
+$text-light: map.get($grayscale, "light");
+
+@mixin root-colors(){
+    --text-color: #{$text-color};
+    --text-light-color: #{$text-light};
+    --text-muted-color: #{$muted};
+    --code-color: #{$code-color};
+    --primary-color: #{$primary};
+    --primary-dark-color: #{$primary-dark};
+    --primary-light-color: #{$primary-light};
+    --secondary-color: #{$secondary};
+    --secondary-light-color: #{$secondary-light};
+    --secondary-dark-color: #{$secondary-dark};
+    --success-color: #{$success};
+    --warning-color: #{$warning};
+    --danger-color: #{$danger};
+    --overlay-color: #{$overlay-color};
+    @each $color, $value in $grayscale {
+        --#{$color}-color: #{$value};
+    }
+}
+
+// list of color classes - gradient combinations are generated from 1 on 1 combinations of colors defined below 
+// below classes should correspond to CSS variables defined in root-colors mixins
+$bgcolors-textcolor-map: 
+(
+    "primary": "--light-color", 
+    "primary-dark": "--light-color",
+    "primary-light": "--light-color",
+    "secondary": "--light-color", 
+    "secondary-dark": "--light-color", 
+    "secondary-light": "--light-color", 
+    "success": "--light-color", 
+    "warning": "--dark-color", 
+    "danger": "--light-color", 
+    "code": "--light-color",
+    "light": "--dark-color",
+    "dark": "--light-color"
+);
+
+$overlay-degrees: ("bottom": 0, "right": 90deg, "top": 180deg, "left": 270deg);
+
+// generates text and background classes 
+@mixin color-classes($bgcolors-textcolor-map: $bgcolors-textcolor-map){
+    @each $bg, $color in $bgcolors-textcolor-map{
+        .border-#{$bg}{
+            border-color: var(--#{$bg}-color);
+        }
+        .#{$bg}{
+            background-color: var(--#{$bg}-color);
+            color: var(#{$color});
+            --btn-color: var(--#{$bg}-color);
+            --btn-text-color: var(#{$color});
+        }
+        .text-#{$bg}{
+            color: var(--#{$bg}-color);
+            --btn-color: var(--#{$bg}-color);
+            --btn-text-color: var(#{$color});
+        }
+        @include for-each-breakpoint() using ($breakpoint) {
+            .border-#{$breakpoint}-#{$bg}{
+                border-color: var(--#{$bg}-color);
+            }
+            .#{$bg}-#{$breakpoint}{
+                background-color: var(--#{$bg}-color);
+                color: var(#{$color});
+                --btn-color: var(--#{$bg}-color);
+                --btn-text-color: var(#{$color});
+            }
+            .text-#{$breakpoint}-#{$bg}{
+                color: var(--#{$bg}-color);
+                --btn-color: var(--#{$bg}-color);
+                --btn-text-color: var(#{$color});
+            }
+        }
+    }
+
+    @each $position, $degrees in $overlay-degrees {
+        .overlay-gradient-#{$position} {
+            background: linear-gradient($degrees, var(--overlay-color), #ffffff00);
+        }
+    }
+
+    .text-muted {
+        color: var(--gray-6-color);
+    }
+    .no-background{
+        background: none;
+        background-color: transparent;
+    }
+    .white{
+        background-color: white;
+    }
+}
+
+@each $bg, $color in $bgcolors-textcolor-map{ 
+    .hover-#{$bg} {
+        --hover-color: var(--#{$bg}-color);
+        --link-hover-color: var(#{$color});
+    }
+}
+
+@for $i from 1 through 100 {
+    @if $i % 5 == 0 {
+        .opacity-#{$i} {
+            opacity: $i * 0.01;
+        }
+    }
+}

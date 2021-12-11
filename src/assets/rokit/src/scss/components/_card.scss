@@ -1,0 +1,45 @@
+.card {
+    padding: 0;
+    margin: 0; 
+
+    h1, h2, h3, h4, h5, h6{
+        padding: 0 var(--unit);
+    }
+
+    &.shadow {
+        @extend .shadow-6 !optional;
+    }
+
+    &.justify-content-vertically {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    &.align-vertically {
+        display: flex;
+        align-items: center;
+        height: 100%;
+    }
+
+    &.rounded{
+        border-radius: var(--unit);
+        .head{
+            border-radius: var(--unit) var(--unit) 0 0 ;
+        }
+    }
+
+    .head, .body {
+        padding: var(--unit);
+        margin: 0;
+        h1, h2, h3, h4, h5, h6{
+            padding: 0;
+            margin: 0;
+            font-weight: 300;
+        }
+    }
+
+    .head {
+        background-color: var(--gray-2-color);
+    }
+}

@@ -1,0 +1,74 @@
+@use "color";
+
+// Creates gradient color pairs
+// Using colors defined in _colors.scss
+// Define more colors in _colors.scss's map $bgcolors-textcolor-map
+@each $color, $text in color.$bgcolors-textcolor-map {
+    @each $color2, $text in color.$bgcolors-textcolor-map {
+        @if $color != $color2 {
+            .gradient-#{$color}-#{$color2} {
+                background: var(--#{$color}-color);
+                background: linear-gradient(
+                    $default-gradient-rotation,
+                    var(--#{$color}-color),
+                    var(--#{$color2}-color)
+                );
+            }
+            // Clipped Text Bg Source: https://robkendal.co.uk/blog/2020-04-02-funky-text-backgrounds-with-background-clip-css
+            .gradient-#{$color}-#{$color2}-clip {
+                display: inline-block;
+                margin: 0 auto;
+                background-clip: text;
+                -webkit-background-clip: text;
+                color: transparent;
+                background-repeat: no-repeat;
+                background-size: auto;
+                background-image: linear-gradient(
+                    $default-gradient-rotation,
+                    var(--#{$color}-color),
+                    var(--#{$color2}-color)
+                );
+                text-shadow: none !important;
+                h1,
+                h2,
+                h3,
+                h4,
+                h5,
+                h6 {
+                    display: inline-block;
+                    text-shadow: none !important;
+                }
+            }
+
+            @include for-each-breakpoint() using ($breakpoint) {
+                .gradient-#{$breakpoint}-#{$color}-#{$color2} {
+                    background: var(--#{$color}-color);
+                    background: linear-gradient(
+                        $default-gradient-rotation,
+                        var(--#{$color}-color),
+                        var(--#{$color2}-color)
+                    );
+                }
+            }
+        }
+    }
+}
+
+@keyframes gradient-animation {
+    0% {
+        background-size: 100% 100%;
+        background-position: 0% 50%;
+    }
+    50% {
+        background-size: 150% 150%;
+        background-position: 0%, -100%;
+    }
+    100% {
+        background-size: 100% 100%;
+        background-position: 0% 0%;
+    }
+}
+
+.animate-gradient {
+    animation: gradient-animation 3.5s ease;
+}

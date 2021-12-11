@@ -1,0 +1,60 @@
+@use "sass:math";
+
+@mixin map-to-rules($map){
+    @each $rule, $value in $map{
+        #{$rule}: $value;
+    }
+}
+
+@mixin animation-step($name, $startRuleMap, $endRuleMap, $level, $animation-length: 0.4s, $delay-increment: 0.3)
+{
+    @keyframes #{$name}-delay-#{$level} {
+        $percentage: math.floor((math.div($level, math.div($animation-length, 1s) + $level)) * 100%);
+        from {
+            @include map-to-rules($startRuleMap);
+            animation-timing-function: cubic-bezier(0.6, 0.045, 0.355, 1);
+        }
+        #{$percentage} {
+            @include map-to-rules($startRuleMap);
+            animation-timing-function: cubic-bezier(0.6, 0.045, 0.355, 1);
+        }
+        to {
+            @include map-to-rules($endRuleMap);
+        }
+    }
+    .#{$name}-delay-#{$level} {
+        animation: #{$name}-delay-#{$level} $animation-length + ($level * $delay-increment * 1s);
+    }
+}
+
+// creates animations for dealyed fade in sequences
+@mixin animation-series($name, $startRuleMap, $endRuleMap, $levels: 20, $animation-length: 0.4s, $delay-increment: 0.3){
+    @for $i from 0 through $levels {
+       @include animation-step($name, $startRuleMap, $endRuleMap, $i, $animation-length, $delay-increment);
+    }
+    @for $i from 0 through $levels {
+        .children-#{$name}{
+            & > *:nth-child(#{$i}){
+                animation: #{$name}-delay-#{$i} $animation-length + ($i * $delay-increment * 1s)
+            }
+        }
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 100;
+    }
+}
+
+@keyframes fade-out {
+    from {
+        opacity: 100%;
+    }
+    to {
+        opacity: 0;
+    }
+}
