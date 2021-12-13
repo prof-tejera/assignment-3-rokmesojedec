@@ -1,18 +1,25 @@
 
 import "./TimersView.scss";
 import Button from "../components/generic/Button/Button";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import WorkoutDisplay from "../components/generic/WorkoutDisplay/WorkoutDispaly";
 
 
 const WorkoutView = () => {
 
-  const { timers, timerIndex, setTimerIndex, setWorkoutEditMode, setWorkoutStart } = useContext(AppContext);
+  const { timers, timerIndex, setTimerIndex, setWorkoutEditMode, setWorkoutStart, setStartNextTimer } = useContext(AppContext);
   const CurrentTimer = timers.filter((timers, index) => index === timerIndex)[0].C;
 
-  setWorkoutEditMode(true);
-  setWorkoutStart(false);
+  useEffect(() => {
+    setWorkoutEditMode(true);
+    setWorkoutStart(false);
+    setStartNextTimer(false);
+  }, [setStartNextTimer, setWorkoutStart, setWorkoutEditMode]);
+
+  useEffect(() => {
+    if (CurrentTimer === null) setStartNextTimer(false);
+  }, [CurrentTimer, setStartNextTimer]);
 
   return (
     <div className="grid typescale-md-major-third grid-col-span-12">

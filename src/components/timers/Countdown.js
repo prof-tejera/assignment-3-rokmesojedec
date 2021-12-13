@@ -8,13 +8,13 @@ import ReactTooltip from 'react-tooltip';
 
 const Countdown = () => {
 
-  const { CountDownTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, CurrentTimer, startNextTimer } = useContext(AppContext);
+  const { CountDownTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, startNextTimer, currentTimer } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(10000);
 
-  const start = () => {setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
+  const start = () => { setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
   const pause = () => { CountDownTimer.clear(false); setPaused(false); }
   const reset = () => { CountDownTimer.reset(); setProgress(CountDownTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
@@ -25,12 +25,6 @@ const Countdown = () => {
   useEffect(() => {
     // Add state tick update and complet events to CountDownTimer object
     CountDownTimer.pushIntervalFunction((CountDownTimer) => { setProgress(CountDownTimer.percentComplete); });
-
-    // if (!workoutStart)
-    //   CountDownTimer.onFinished = () => { setPaused(false); if (CountDownTimer.isTimerComplete) setDone(true); };
-    // else {
-    //   CountDownTimer.clear(false); setPaused(false); setEditMode(false);
-    // }
 
     setProgress(CountDownTimer.percentComplete);
 
@@ -52,12 +46,9 @@ const Countdown = () => {
     }
   }, [workoutEditMode, CountDownTimer, workoutStart])
 
-  // useEffect(() => {
-  //   if (workoutStart) { start(); }
-  // }, [workoutStart, currentTimer])
   useEffect(() => {
     if (startNextTimer) { CountDownTimer.start(false); setPaused(true); }
-  }, [ startNextTimer])
+  }, [startNextTimer, currentTimer, CountDownTimer])
 
   return <Panel>
     <ProgressCircle progress={workoutEditMode && !workoutStart ? 0 : progress} thickness="sm" size="lg" className="timer" >

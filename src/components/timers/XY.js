@@ -9,7 +9,7 @@ import ReactTooltip from 'react-tooltip';
 
 const XY = () => {
 
-  const { XYTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart } = useContext(AppContext);
+  const { XYTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, startNextTimer, currentTimer } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -18,15 +18,14 @@ const XY = () => {
   const [paused, setPaused] = useState(false);
 
   useEffect(() => {
+
     const setTimerState = (XYTimer) => {
       setProgress(XYTimer.percentComplete);
       setRoundProgress(XYTimer.roundPercentComplete);
       setRound(XYTimer.currentRound);
     };
+
     XYTimer.pushIntervalFunction(setTimerState);
-    // if (!workoutStart)
-    //   XYTimer.onFinished = () => { setPaused(false); if (XYTimer.isTimerComplete) setDone(true); };
-    // else XYTimer.start();
 
     setTimerState(XYTimer);
 
@@ -57,6 +56,10 @@ const XY = () => {
   const runAgain = () => { reset(); setDone(false); }
 
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
+
+  useEffect(() => {
+    if (startNextTimer) { XYTimer.start(false); setPaused(true); }
+  }, [startNextTimer, currentTimer, XYTimer])
 
   return <Panel>
     <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progress} className="timer" size="xl" thickness="sm">

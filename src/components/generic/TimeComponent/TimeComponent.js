@@ -6,7 +6,6 @@ import './TimeComponent.scss';
 
 class TimeComponent extends Component {
     render() {
-
         const { prependZero, value, label, className,
             showColon, readOnly, onValueChange } = this.props;
 

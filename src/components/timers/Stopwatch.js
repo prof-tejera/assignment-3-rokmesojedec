@@ -8,7 +8,8 @@ import ReactTooltip from 'react-tooltip';
 
 const Stopwatch = () => {
 
-  const { StopwatchTimer, setDone, isDone, workoutEditMode, addWorkout, workoutStart, setWorkoutStart } = useContext(AppContext);
+  const { StopwatchTimer, setDone, isDone, workoutEditMode, 
+    addWorkout, workoutStart, setWorkoutStart, startNextTimer, currentTimer } = useContext(AppContext);
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -16,9 +17,9 @@ const Stopwatch = () => {
   useEffect(() => {
     // Add state tick update and complet events to timer object
     StopwatchTimer.pushIntervalFunction((StopwatchTimer) => { setProgress(StopwatchTimer.percentComplete); })
-    if (!workoutStart)
-      StopwatchTimer.onFinished = () => { setPaused(false); if (StopwatchTimer.isTimerComplete) setDone(true); };
-    else StopwatchTimer.start(false);
+    // if (!workoutStart)
+    //   StopwatchTimer.onFinished = () => { setPaused(false); if (StopwatchTimer.isTimerComplete) setDone(true); };
+    // else StopwatchTimer.start(false);
 
     setProgress(StopwatchTimer.percentComplete);
 
@@ -48,11 +49,15 @@ const Stopwatch = () => {
   const runAgain = () => { reset(); setDone(false); }
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 
+  useEffect(() => {
+    if (startNextTimer) { StopwatchTimer.start(false); setPaused(true); }
+  }, [startNextTimer, currentTimer, StopwatchTimer])
+
   return <Panel>
-    <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progress} thickness="sm" className="timer">
+    <ProgressCircle progress={workoutEditMode ? 0 : progress} thickness="sm" className="timer">
       <div>
         <DisplayTime timer={StopwatchTimer} readOnly={readOnlyMode} className="panel-morph p-2"></DisplayTime>
-        {!workoutStart && WorkoutPanel(workoutEditMode, addWorkout, {
+        {WorkoutPanel(workoutEditMode, addWorkout, {
           type: "stopwatch",
           timer: StopwatchTimer
         })}
