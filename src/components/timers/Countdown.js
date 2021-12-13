@@ -8,13 +8,13 @@ import ReactTooltip from 'react-tooltip';
 
 const Countdown = () => {
 
-  const { CountDownTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, setWorkoutStart } = useContext(AppContext);
+  const { CountDownTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, CurrentTimer, startNextTimer } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(10000);
 
-  const start = () => { setWorkoutStart(true); setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
+  const start = () => {setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
   const pause = () => { CountDownTimer.clear(false); setPaused(false); }
   const reset = () => { CountDownTimer.reset(); setProgress(CountDownTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
@@ -55,12 +55,15 @@ const Countdown = () => {
   // useEffect(() => {
   //   if (workoutStart) { start(); }
   // }, [workoutStart, currentTimer])
+  useEffect(() => {
+    if (startNextTimer) { CountDownTimer.start(false); setPaused(true); }
+  }, [ startNextTimer])
 
   return <Panel>
     <ProgressCircle progress={workoutEditMode && !workoutStart ? 0 : progress} thickness="sm" size="lg" className="timer" >
       <div><DisplayTime timer={CountDownTimer}
         readOnly={readOnlyMode} className="panel-morph p-2"></DisplayTime>
-          {WorkoutPanel(workoutEditMode, addWorkout, {
+        {WorkoutPanel(workoutEditMode, addWorkout, {
           type: "countdown",
           timer: CountDownTimer
         })}

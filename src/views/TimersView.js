@@ -17,23 +17,21 @@ const App = () => {
     popQueue,
     setWorkoutStart,
     setCurrentTimer,
-    workoutStart,
     setWorkoutEditMode,
     currentTimer,
-    currentWorkout
+    currentWorkout,
+    setStartNextTimer
   } = useContext(AppContext);
 
-  useEffect(() => {
-    setWorkoutEditMode(false);
-    setWorkoutStart(false);
-  }, [setWorkoutEditMode, setWorkoutStart])
+  setWorkoutEditMode(false);
+  setWorkoutStart(false);
 
   useEffect(() => {
     const PrepareTimer = (Timer, TimerComponent, state) => {
       Timer.deserialize(state.config);
-      Timer.onFinished = () => { popQueue(); }
+      Timer.onFinished = () => { popQueue(); setStartNextTimer(true); }
       setCurrentTimer(TimerComponent);
-      Timer.start();
+      // Timer.start();
     }
     if (currentWorkout) switch (currentWorkout.type) {
       case "stopwatch":
@@ -52,13 +50,16 @@ const App = () => {
         break;
     }
     else {
-      setCurrentTimer(null);
+      // setCurrentTimer(null);
+      //setStartNextTimer(false);
     }
-  }, [workoutStart, currentWorkout]);
+
+  }, [currentWorkout, setStartNextTimer]);
+  
   return (
     <div className="grid typescale-md-major-third grid-col-span-12">
       <WorkoutDisplay />
-      { <>
+      {<>
         {currentTimer}
       </>}
     </div>

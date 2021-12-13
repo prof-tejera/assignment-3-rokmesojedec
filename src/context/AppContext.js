@@ -41,6 +41,8 @@ const AppProvider = ({ children }) => {
     const [currentWorkout, setCurrentWorkout] = useState(null);
     const [workoutStart, setWorkoutStart] = useState(false);
     const [currentTimer, setCurrentTimer] = useState(null);
+    const [startNextTimer, setStartNextTimer] = useState(false);
+
 
     const addWorkout = (workout) => {
         let newQueue = [...workoutQueue, workout];
@@ -70,7 +72,9 @@ const AppProvider = ({ children }) => {
         let newQueue = [...workoutQueue];
         setWorkoutQueue(newQueue);
         if (newQueue.length) setCurrentWorkout(newQueue[0]);
-        else setCurrentWorkout(null);
+        else {
+            setCurrentWorkout(null);
+        }
     }
 
     return <AppContext.Provider
@@ -88,13 +92,15 @@ const AppProvider = ({ children }) => {
             addWorkout,
             workoutQueue,
             setWorkoutEditMode,
-            workoutStart, 
+            workoutStart,
             toggleWorkout,
             currentWorkout,
             popQueue,
-            currentTimer, 
-            setCurrentTimer, 
-            setWorkoutStart
+            currentTimer,
+            setCurrentTimer,
+            setWorkoutStart,
+            setStartNextTimer,
+            startNextTimer
         }}>
         {children}
     </AppContext.Provider>
