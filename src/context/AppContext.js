@@ -88,10 +88,13 @@ const AppProvider = ({ children }) => {
             addWorkout,
             workoutQueue,
             setWorkoutEditMode,
-            workoutStart, toggleWorkout,
+            workoutStart, 
+            toggleWorkout,
             currentWorkout,
             popQueue,
-            currentTimer, setCurrentTimer
+            currentTimer, 
+            setCurrentTimer, 
+            setWorkoutStart
         }}>
         {children}
     </AppContext.Provider>

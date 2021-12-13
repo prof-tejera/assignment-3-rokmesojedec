@@ -90,16 +90,17 @@ export class Timer {
             if (serializedState[timeUnit]) this["_" + timeUnit] = serializedState[timeUnit];
         }
 
-        if(serializedState.rounds) this._rounds = this._currentRound = serializedState.rounds;
-        else  this._rounds = this._currentRound = 1;
+        if (serializedState.rounds) this._rounds = this._currentRound = serializedState.rounds;
+        else this._rounds = this._currentRound = 1;
         this.initializeTime(this.countdownMode);
         this.refresh();
     }
 
-    
+
     serialize() {
         return {
             milliseconds: this.milliseconds,
+            minutes: this.minutes,
             seconds: this.seconds,
             hours: this.hours,
             rounds: this.rounds
@@ -189,7 +190,8 @@ export class Timer {
     }
 
     refresh() {
-        this.intervalFunctions.forEach(func => { func(this); });
+        if (this.intervalFunctions)
+            this.intervalFunctions.forEach(func => { func(this); });
     }
 
     clean() {
@@ -335,5 +337,14 @@ export class Timer {
 
     static get TIME_ENUM() {
         return TIME_ENUM;
+    }
+
+    toString() {
+        let timeString = [];
+        if (this.currentHours) timeString.push(`${this.currentHours}h`);
+        if (this.currentMinutes) timeString.push(`${this.currentMinutes}m`);
+        if (this.currentSeconds) timeString.push(`${this.currentSeconds}s`);
+        if (this.currentMilliseconds) timeString.push(`${this.currentMilliseconds}ms`);
+        return timeString.join(" ");
     }
 }

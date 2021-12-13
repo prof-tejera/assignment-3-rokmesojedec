@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 
 const Tabata = () => {
 
-  const { IntervalTabata, setDone, isDone, workoutEditMode, addWorkout } = useContext(AppContext);
+  const { IntervalTabata, setDone, isDone, workoutEditMode, addWorkout, workoutStart } = useContext(AppContext);
   const [TabataTimerA, TabataTimerB] = IntervalTabata.timers;
   const [progressTabataTimerA, setProgressTabataTimerA] = useState(0);
   const [progressTabataTimerB, setProgressTabataTimerB] = useState(0);
@@ -47,10 +47,14 @@ const Tabata = () => {
     });
 
     // set Pause state when interval object is done
-    IntervalTabata.onFinished = () => {
-      setPaused(false); setRound(IntervalTabata.currentRound);
-      setDone(true);
-    };
+    if (!workoutStart)
+      IntervalTabata.onFinished = () => {
+        setPaused(false); setRound(IntervalTabata.currentRound);
+        setDone(true);
+      };
+    else {
+      IntervalTabata.start();
+    }
 
     updateInterval();
     setProgressTabataTimerA(TabataTimerA.percentComplete);
@@ -64,7 +68,7 @@ const Tabata = () => {
       IntervalTabata.clear(false);
       IntervalTabata.clean();
     }
-  }, [IntervalTabata, TabataTimerA, TabataTimerB, setDone]);
+  }, [IntervalTabata, TabataTimerA, TabataTimerB, setDone, workoutStart]);
 
   const start = () => { IntervalTabata.start(false); setPaused(true); setEditMode(false); setDone(false); };
   const pause = () => { IntervalTabata.clear(false); setPaused(false); };
@@ -74,7 +78,7 @@ const Tabata = () => {
   const updateRound = (value) => { IntervalTabata.rounds = value; updateInterval(); }
   const runAgain = () => { reset(); setDone(false); }
 
-  const readOnlyMode = workoutEditMode === false ? !editMode : !workoutEditMode;
+  const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 
   const showComponents = {
     hours: false,
@@ -85,17 +89,17 @@ const Tabata = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       IntervalTabata.resetTime();
       setRound(1);
     }
-  }, [workoutEditMode, IntervalTabata])
+  }, [workoutEditMode, IntervalTabata, workoutStart])
 
   return <Panel>
-    <ProgressCircle progress={workoutEditMode ? 0 : currentProgress} size="xl" thickness="sm" className="timer">
+    <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : currentProgress} size="xl" thickness="sm" className="timer">
       <div className="tabata">
         <div>
-          <ProgressCircle progress={workoutEditMode ? 0 : progressRound} size="sm" thickness="sm" className="tiny-timer">
+          <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progressRound} size="sm" thickness="sm" className="tiny-timer">
             <TimeComponent label="round"
               prependZero={true}
               value={currentRound}
@@ -104,7 +108,7 @@ const Tabata = () => {
           </ProgressCircle>
         </div>
         <div className="tabata-progress-panel">
-          <ProgressCircle progress={workoutEditMode ? 0 : progressTabataTimerA} size="sm" thickness="sm" className="tiny-timer">
+          <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progressTabataTimerA} size="sm" thickness="sm" className="tiny-timer">
             <div className="tabata-progress-wrapper">
               <span className="tabata-label">work</span>
               <DisplayTime timer={TabataTimerA} className="small p-t-0" readOnly={readOnlyMode} showComponents={showComponents}
@@ -112,7 +116,7 @@ const Tabata = () => {
               ></DisplayTime>
             </div>
           </ProgressCircle>
-          <ProgressCircle progress={workoutEditMode ? 0 : progressTabataTimerB} size="sm" thickness="sm" className="tiny-timer">
+          <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progressTabataTimerB} size="sm" thickness="sm" className="tiny-timer">
             <div className="tabata-progress-wrapper">
               <span className="tabata-label">rest</span>
               <DisplayTime timer={TabataTimerB} className="small p-t-0" readOnly={readOnlyMode}
@@ -126,8 +130,8 @@ const Tabata = () => {
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}
     {WorkoutPanel(workoutEditMode, addWorkout, {
-      type: "interval",
-      config: IntervalTabata.serialize()
+      type: "tabata",
+      timer: IntervalTabata
     })}
     {!workoutEditMode && CongratsPanel(isDone, runAgain)}
   </Panel>;

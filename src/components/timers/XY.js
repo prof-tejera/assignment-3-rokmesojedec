@@ -9,7 +9,7 @@ import ReactTooltip from 'react-tooltip';
 
 const XY = () => {
 
-  const { XYTimer, isDone, setDone, workoutEditMode, addWorkout } = useContext(AppContext);
+  const { XYTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -24,7 +24,10 @@ const XY = () => {
       setRound(XYTimer.currentRound);
     };
     XYTimer.pushIntervalFunction(setTimerState);
-    XYTimer.onFinished = () => { setPaused(false); if (XYTimer.isTimerComplete) setDone(true); };
+    if (!workoutStart)
+      XYTimer.onFinished = () => { setPaused(false); if (XYTimer.isTimerComplete) setDone(true); };
+    else XYTimer.start();
+
     setTimerState(XYTimer);
 
     // Needed to keep tooltips after component mount/unmount
@@ -39,11 +42,11 @@ const XY = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       XYTimer.initializeTime(true, true);
       XYTimer.refresh();
     }
-  }, [workoutEditMode, XYTimer])
+  }, [workoutEditMode, XYTimer, workoutStart])
 
   const start = () => { XYTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
   const pause = () => { XYTimer.clear(); setPaused(false); }
@@ -53,12 +56,12 @@ const XY = () => {
   const updateRound = (value) => { XYTimer.rounds = value; setRound(XYTimer.currentRound); }
   const runAgain = () => { reset(); setDone(false); }
 
-  const readOnlyMode = workoutEditMode === false ? !editMode : !workoutEditMode;
+  const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 
   return <Panel>
-    <ProgressCircle progress={workoutEditMode ? 0 : progress} className="timer" size="xl" thickness="sm">
+    <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progress} className="timer" size="xl" thickness="sm">
       <div>
-        <ProgressCircle progress={workoutEditMode ? 0 : roundProgress} className="tiny-timer" size="sm" thickness="sm">
+        <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : roundProgress} className="tiny-timer" size="sm" thickness="sm">
           <TimeComponent value={round} label="round" readOnly={readOnlyMode}
             onValueChange={(e) => { updateRound(e); }}
           ></TimeComponent>
@@ -68,9 +71,9 @@ const XY = () => {
       </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}
-    {WorkoutPanel(workoutEditMode, addWorkout, {
-      type: "interval",
-      config: XYTimer.serialize()
+    {!workoutStart && WorkoutPanel(workoutEditMode, addWorkout, {
+      type: "xy",
+      timer: XYTimer
     })}
     {!workoutEditMode && CongratsPanel(isDone, runAgain)}
   </Panel>;

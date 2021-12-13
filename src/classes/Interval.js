@@ -26,6 +26,7 @@ export class Interval {
         let { rounds, timers } = state;
         this._rounds = rounds;
         this.timers = [...timers.map(timerState => new Timer({ serializedState: timerState }))];
+        this.intializeTimers();
     }
 
     serialize() {

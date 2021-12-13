@@ -28,6 +28,9 @@ const Countdown = () => {
 
     if (!workoutStart)
       CountDownTimer.onFinished = () => { setPaused(false); if (CountDownTimer.isTimerComplete) setDone(true); };
+    else {
+      CountDownTimer.clear(false); setPaused(false); setEditMode(false);
+    }
 
     setProgress(CountDownTimer.percentComplete);
 
@@ -43,15 +46,15 @@ const Countdown = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       CountDownTimer.initializeTime(true, true);
       CountDownTimer.refresh();
     }
-  }, [workoutEditMode, CountDownTimer])
+  }, [workoutEditMode, CountDownTimer, workoutStart])
 
-  useEffect(() => {
-    if (workoutStart) { start(); }
-  }, [workoutStart, currentTimer])
+  // useEffect(() => {
+  //   if (workoutStart) { start(); }
+  // }, [workoutStart, currentTimer])
 
   return <Panel>
     <ProgressCircle progress={workoutEditMode && !workoutStart ? 0 : progress} thickness="sm" size="lg" className="timer" >

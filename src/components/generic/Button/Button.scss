@@ -5,6 +5,11 @@
     background: none;
     cursor: pointer;
     color: rgb(182, 182, 182);
+
+    color: black;
+    border-radius: 50px;
+    background: #e0e0e0;
+    box-shadow: 5px 5px 15px #afafaf, -5px -5px 15px #ffffff;
     span {
         vertical-align: middle;
     }

@@ -8,7 +8,7 @@ import ReactTooltip from 'react-tooltip';
 
 const Stopwatch = () => {
 
-  const { StopwatchTimer, setDone, isDone, workoutEditMode, addWorkout, workoutStart, currentWorkout } = useContext(AppContext);
+  const { StopwatchTimer, setDone, isDone, workoutEditMode, addWorkout, workoutStart } = useContext(AppContext);
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -18,6 +18,7 @@ const Stopwatch = () => {
     StopwatchTimer.pushIntervalFunction((StopwatchTimer) => { setProgress(StopwatchTimer.percentComplete); })
     if (!workoutStart)
       StopwatchTimer.onFinished = () => { setPaused(false); if (StopwatchTimer.isTimerComplete) setDone(true); };
+    else StopwatchTimer.start(false);
 
     setProgress(StopwatchTimer.percentComplete);
 
@@ -33,7 +34,7 @@ const Stopwatch = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       StopwatchTimer.initializeTime(true, true);
       StopwatchTimer.refresh();
     }
@@ -46,10 +47,6 @@ const Stopwatch = () => {
   const fastForward = () => { StopwatchTimer.finishRound(); setProgress(StopwatchTimer.percentComplete); start(); setPaused(false); setDone(true); }
   const runAgain = () => { reset(); setDone(false); }
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
-
-  useEffect(() => {
-    if (workoutStart) { start(); }
-  }, [workoutStart, currentWorkout, start])
 
   return <Panel>
     <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progress} thickness="sm" className="timer">

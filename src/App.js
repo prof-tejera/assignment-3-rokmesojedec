@@ -37,7 +37,7 @@ function App() {
                 <Link to="/docs"><MatIcon>description</MatIcon> Documentation</Link>
               </li>
               <li>
-                <Link to="/workout"><MatIcon>add</MatIcon> Workout</Link>
+                <Link to="/add"><MatIcon>add</MatIcon> Create Workout</Link>
               </li>
             </ul>
           </nav>
@@ -45,7 +45,7 @@ function App() {
 
         <section className="max-width-center-xxl p-b-0 m-b-0">
           <Switch>
-            <Route path="/workout">
+            <Route path="/add">
               <WorkoutView />
             </Route>
             <Route path="/docs">
