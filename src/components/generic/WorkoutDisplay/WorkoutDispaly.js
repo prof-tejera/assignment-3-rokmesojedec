@@ -1,7 +1,5 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { AppContext } from '../../../context/AppContext';
-import Button from '../Button/Button';
-import PropTypes from 'prop-types';
 import { Timer } from '../../../classes/Timer';
 
 import './WorkoutDisplay.scss';
@@ -35,11 +33,12 @@ const DurationString = (state) => {
                     }
                 }
 
-                for (const [key, value] of Object.entries(intervalTime)) {
+                for (const [key] of Object.entries(intervalTime)) {
                     intervalTime[key] *= state.config.rounds;
                 }
 
-                return new Timer({ serializedState: intervalTime }).toString();;
+                return new Timer({ serializedState: intervalTime }).toString();
+            default: return {};
         }
     return "";
 }
@@ -50,6 +49,7 @@ const WorkoutDisplay = () => {
         {workoutQueue.map((workout, index) => {
             return <div key={index} className='workout'><h6>{workout.type}</h6> {DurationString(workout)}</div>
         })}
+        {workoutQueue.length === 0 && <div>Please add some workouts</div>}
     </div>;
 }
 

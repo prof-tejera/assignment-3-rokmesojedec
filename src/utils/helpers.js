@@ -31,13 +31,9 @@ export const ButtonsPanel = (paused, start, pause, reset, fastForward, toggleEdi
 }
 
 export const WorkoutPanel = (workoutEditMode, addWorkout, value) => {
-    return (workoutEditMode && (
-        <div className="workout-panel">
-            <Button className='p-1 bold' onButtonClick={() => {
-                addWorkout({ type: value.type, config: value.timer.serialize()});
-            }}><MatIcon>fitness_center</MatIcon> Add Workout</Button>
-        </div>
-    ))
+    return (workoutEditMode && (<div class="text-center m-t-1">  <Button className='p-1 bold' onButtonClick={() => {
+        addWorkout({ type: value.type, config: value.timer.serialize() });
+    }}><MatIcon>fitness_center</MatIcon> Add Workout</Button></div>))
 };
 
 export const CongratsPanel = (show, startFunc) => {

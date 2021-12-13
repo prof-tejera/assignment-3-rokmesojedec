@@ -1,7 +1,7 @@
 
 import "./TimersView.scss";
 import Button from "../components/generic/Button/Button";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import WorkoutDisplay from "../components/generic/WorkoutDisplay/WorkoutDispaly";
 
@@ -14,12 +14,10 @@ const WorkoutView = () => {
   useEffect(() => {
     setWorkoutEditMode(true);
     setWorkoutStart(false);
-  }, [setWorkoutEditMode])
-
+  }, [setWorkoutEditMode, setWorkoutStart])
 
   return (
     <div className="grid typescale-md-major-third grid-col-span-12">
-      <WorkoutDisplay />
       <div className="col-span-12 buttons m-t-4">
         {timers.map((timer, index) => (
           <Button onButtonClick={() => { setTimerIndex(index) }}
@@ -30,6 +28,7 @@ const WorkoutView = () => {
         ))}
       </div>
       {CurrentTimer}
+      <WorkoutDisplay />
     </div>
   );
 }

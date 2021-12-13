@@ -24,9 +24,9 @@ const XY = () => {
       setRound(XYTimer.currentRound);
     };
     XYTimer.pushIntervalFunction(setTimerState);
-    if (!workoutStart)
-      XYTimer.onFinished = () => { setPaused(false); if (XYTimer.isTimerComplete) setDone(true); };
-    else XYTimer.start();
+    // if (!workoutStart)
+    //   XYTimer.onFinished = () => { setPaused(false); if (XYTimer.isTimerComplete) setDone(true); };
+    // else XYTimer.start();
 
     setTimerState(XYTimer);
 
@@ -38,7 +38,7 @@ const XY = () => {
       XYTimer.clear(false);
       XYTimer.clean();
     }
-  }, [XYTimer, setDone]);
+  }, [XYTimer, setDone, workoutStart]);
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
@@ -49,7 +49,7 @@ const XY = () => {
   }, [workoutEditMode, XYTimer, workoutStart])
 
   const start = () => { XYTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
-  const pause = () => { XYTimer.clear(); setPaused(false); }
+  const pause = () => { XYTimer.clear(false); setPaused(false); }
   const reset = () => { XYTimer.reset(); setProgress(XYTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
   const fastForward = () => { XYTimer.finishRound(); setProgress(XYTimer.percentComplete); XYTimer.start(false); }
@@ -67,14 +67,13 @@ const XY = () => {
           ></TimeComponent>
         </ProgressCircle>
         <DisplayTime className="m-t-1" timer={XYTimer} readOnly={readOnlyMode}></DisplayTime>
-
+        {!workoutStart && WorkoutPanel(workoutEditMode, addWorkout, {
+          type: "xy",
+          timer: XYTimer
+        })}
       </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}
-    {!workoutStart && WorkoutPanel(workoutEditMode, addWorkout, {
-      type: "xy",
-      timer: XYTimer
-    })}
     {!workoutEditMode && CongratsPanel(isDone, runAgain)}
   </Panel>;
 }

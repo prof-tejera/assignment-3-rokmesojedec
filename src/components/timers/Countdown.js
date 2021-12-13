@@ -8,13 +8,13 @@ import ReactTooltip from 'react-tooltip';
 
 const Countdown = () => {
 
-  const { CountDownTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, currentTimer } = useContext(AppContext);
+  const { CountDownTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, setWorkoutStart } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(10000);
 
-  const start = () => { setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
+  const start = () => { setWorkoutStart(true); setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
   const pause = () => { CountDownTimer.clear(false); setPaused(false); }
   const reset = () => { CountDownTimer.reset(); setProgress(CountDownTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
@@ -26,11 +26,11 @@ const Countdown = () => {
     // Add state tick update and complet events to CountDownTimer object
     CountDownTimer.pushIntervalFunction((CountDownTimer) => { setProgress(CountDownTimer.percentComplete); });
 
-    if (!workoutStart)
-      CountDownTimer.onFinished = () => { setPaused(false); if (CountDownTimer.isTimerComplete) setDone(true); };
-    else {
-      CountDownTimer.clear(false); setPaused(false); setEditMode(false);
-    }
+    // if (!workoutStart)
+    //   CountDownTimer.onFinished = () => { setPaused(false); if (CountDownTimer.isTimerComplete) setDone(true); };
+    // else {
+    //   CountDownTimer.clear(false); setPaused(false); setEditMode(false);
+    // }
 
     setProgress(CountDownTimer.percentComplete);
 
@@ -59,13 +59,15 @@ const Countdown = () => {
   return <Panel>
     <ProgressCircle progress={workoutEditMode && !workoutStart ? 0 : progress} thickness="sm" size="lg" className="timer" >
       <div><DisplayTime timer={CountDownTimer}
-        readOnly={readOnlyMode} className="panel-morph p-2"></DisplayTime></div>
+        readOnly={readOnlyMode} className="panel-morph p-2"></DisplayTime>
+          {WorkoutPanel(workoutEditMode, addWorkout, {
+          type: "countdown",
+          timer: CountDownTimer
+        })}
+      </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}
-    {WorkoutPanel(workoutEditMode, addWorkout, {
-      type: "countdown",
-      timer: CountDownTimer
-    })}
+
     {!workoutEditMode && CongratsPanel(isDone, runAgain)}
 
   </Panel>;

@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 
 const Tabata = () => {
 
-  const { IntervalTabata, setDone, isDone, workoutEditMode, addWorkout, workoutStart } = useContext(AppContext);
+  const { IntervalTabata, setDone, isDone, workoutEditMode, addWorkout, workoutStart, setWorkoutStart } = useContext(AppContext);
   const [TabataTimerA, TabataTimerB] = IntervalTabata.timers;
   const [progressTabataTimerA, setProgressTabataTimerA] = useState(0);
   const [progressTabataTimerB, setProgressTabataTimerB] = useState(0);
@@ -70,8 +70,8 @@ const Tabata = () => {
     }
   }, [IntervalTabata, TabataTimerA, TabataTimerB, setDone, workoutStart]);
 
-  const start = () => { IntervalTabata.start(false); setPaused(true); setEditMode(false); setDone(false); };
-  const pause = () => { IntervalTabata.clear(false); setPaused(false); };
+  const start = () => { setWorkoutStart(true); IntervalTabata.start(false); setPaused(true); setEditMode(false); setDone(false); };
+  const pause = () => { setWorkoutStart(false); IntervalTabata.clear(false); setPaused(false); };
   const reset = () => { pause(); IntervalTabata.reset(); updateInterval(); };
   const fastForward = () => { IntervalTabata.finishCurrent(); if (!paused) pause(); }
   const toggleEditMode = () => { pause(); IntervalTabata.reset(); setEditMode(!editMode); };
@@ -126,13 +126,13 @@ const Tabata = () => {
             </div>
           </ProgressCircle>
         </div>
+        {WorkoutPanel(workoutEditMode, addWorkout, {
+            type: "tabata",
+            timer: IntervalTabata
+          })}
       </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}
-    {WorkoutPanel(workoutEditMode, addWorkout, {
-      type: "tabata",
-      timer: IntervalTabata
-    })}
     {!workoutEditMode && CongratsPanel(isDone, runAgain)}
   </Panel>;
 }
