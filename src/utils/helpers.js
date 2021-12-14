@@ -30,8 +30,8 @@ export const ButtonsPanel = (paused, start, pause, reset, fastForward, toggleEdi
     </div>
 }
 
-export const WorkoutPanel = (workoutEditMode, addWorkout, value) => {
-    return (workoutEditMode && (<div className="text-center m-t-1">  <Button className='p-1 bold' onButtonClick={() => {
+export const WorkoutPanel = (workoutEditMode, addWorkout, value, isValid) => {
+    return (workoutEditMode && (<div className="text-center m-t-1">  <Button disabled={!isValid} className='p-1 bold' onButtonClick={() => {
         addWorkout({ type: value.type, config: value.timer.serialize() });
     }}><MatIcon>fitness_center</MatIcon> Add Workout</Button></div>))
 };

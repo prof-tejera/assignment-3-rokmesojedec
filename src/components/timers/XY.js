@@ -9,7 +9,8 @@ import ReactTooltip from 'react-tooltip';
 
 const XY = () => {
 
-  const { XYTimer, isDone, setDone, workoutEditMode, addWorkout, workoutStart, startNextTimer, currentTimer } = useContext(AppContext);
+  const { XYTimer, isDone, setDone, workoutEditMode, addWorkout, isValidInput, setIsValidInput,
+        workoutStart, startNextTimer, currentTimer, setWorkoutStart } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -37,17 +38,18 @@ const XY = () => {
       XYTimer.clear(false);
       XYTimer.clean();
     }
-  }, [XYTimer, setDone, workoutStart]);
+  }, [XYTimer, setDone]);
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (!workoutStart && workoutEditMode) {
+    if (workoutEditMode) {
       XYTimer.initializeTime(true, true);
       XYTimer.refresh();
+      setIsValidInput(false);
     }
-  }, [workoutEditMode, XYTimer, workoutStart])
+  }, [workoutEditMode, XYTimer, setIsValidInput])
 
-  const start = () => { XYTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
+  const start = () => { setWorkoutStart(true); XYTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
   const pause = () => { XYTimer.clear(false); setPaused(false); }
   const reset = () => { XYTimer.reset(); setProgress(XYTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
@@ -62,18 +64,18 @@ const XY = () => {
   }, [startNextTimer, currentTimer, XYTimer])
 
   return <Panel>
-    <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : progress} className="timer" size="xl" thickness="sm">
+    <ProgressCircle progress={workoutEditMode ? 0 : progress} className="timer" size="xl" thickness="sm">
       <div>
-        <ProgressCircle progress={!workoutStart && workoutEditMode ? 0 : roundProgress} className="tiny-timer" size="sm" thickness="sm">
+        <ProgressCircle progress={workoutEditMode ? 0 : roundProgress} className="tiny-timer" size="sm" thickness="sm">
           <TimeComponent value={round} label="round" readOnly={readOnlyMode}
-            onValueChange={(e) => { updateRound(e); }}
+            onValueChange={(e) => { updateRound(e); setIsValidInput(XYTimer.isValidInput()) }}
           ></TimeComponent>
         </ProgressCircle>
         <DisplayTime className="m-t-1" timer={XYTimer} readOnly={readOnlyMode}></DisplayTime>
-        {!workoutStart && WorkoutPanel(workoutEditMode, addWorkout, {
+        {WorkoutPanel(workoutEditMode, addWorkout, {
           type: "xy",
           timer: XYTimer
-        })}
+        }, isValidInput)}
       </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}

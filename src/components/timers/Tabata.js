@@ -11,7 +11,7 @@ import ReactTooltip from 'react-tooltip';
 const Tabata = () => {
 
   const { IntervalTabata, setDone, isDone, workoutEditMode, addWorkout, startNextTimer, currentTimer,
-    workoutStart } = useContext(AppContext);
+    workoutStart, isValidInput, setIsValidInput, setWorkoutStart } = useContext(AppContext);
   const [TabataTimerA, TabataTimerB] = IntervalTabata.timers;
   const [progressTabataTimerA, setProgressTabataTimerA] = useState(0);
   const [progressTabataTimerB, setProgressTabataTimerB] = useState(0);
@@ -47,7 +47,6 @@ const Tabata = () => {
       updateInterval();
     });
 
-
     updateInterval();
     setProgressTabataTimerA(TabataTimerA.percentComplete);
     setProgressTabataTimerB(TabataTimerB.percentComplete);
@@ -60,9 +59,9 @@ const Tabata = () => {
       IntervalTabata.clear(false);
       IntervalTabata.clean();
     }
-  }, [IntervalTabata, TabataTimerA, TabataTimerB, setDone, workoutStart]);
+  }, [IntervalTabata, TabataTimerA, TabataTimerB, setDone]);
 
-  const start = () => { IntervalTabata.start(false); setPaused(true); setEditMode(false); setDone(false); };
+  const start = () => { setWorkoutStart(true); IntervalTabata.start(false); setPaused(true); setEditMode(false); setDone(false); };
   const pause = () => { IntervalTabata.clear(false); setPaused(false); };
   const reset = () => { pause(); IntervalTabata.reset(); updateInterval(); };
   const fastForward = () => { IntervalTabata.finishCurrent(); if (!paused) pause(); }
@@ -81,11 +80,12 @@ const Tabata = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (!workoutStart && workoutEditMode) {
+    if (workoutEditMode) {
       IntervalTabata.resetTime();
       setRound(1);
+      setIsValidInput(false);
     }
-  }, [workoutEditMode, IntervalTabata, workoutStart])
+  }, [workoutEditMode, IntervalTabata, setIsValidInput])
 
   useEffect(() => {
     if (startNextTimer) { IntervalTabata.start(false); setPaused(true); }
@@ -100,7 +100,7 @@ const Tabata = () => {
               prependZero={true}
               value={currentRound}
               readOnly={readOnlyMode}
-              onValueChange={e => { updateRound(e); }}></TimeComponent>
+              onValueChange={e => { updateRound(e); setIsValidInput(IntervalTabata.isValidInput())}}></TimeComponent>
           </ProgressCircle>
         </div>
         <div className="tabata-progress-panel">
@@ -125,7 +125,7 @@ const Tabata = () => {
         {WorkoutPanel(workoutEditMode, addWorkout, {
           type: "tabata",
           timer: IntervalTabata
-        })}
+        }, isValidInput)}
       </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}

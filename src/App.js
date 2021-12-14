@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import DocumentationView from "./views/DocumentationView";
 import TimersView from "./views/TimersView";
 import WorkoutView from "./views/WorkoutView";
-import 'material-icons/iconfont/material-icons.css';
+import "material-icons/iconfont/material-icons.css";
 import MatIcon from "./components/generic/MatIcon";
 
 // Source: https://github.com/rokmesojedec/roKit
@@ -31,13 +31,19 @@ function App() {
             </h1>
             <ul className="hover-light children-p-2 text-light">
               <li>
-                <Link to="/"><MatIcon>timer</MatIcon> Timers</Link>
+                <Link to="/">
+                  <MatIcon>timer</MatIcon> Start Workout 
+                </Link>
               </li>
               <li>
-                <Link to="/docs"><MatIcon>description</MatIcon> Documentation</Link>
+                <Link to="/add">
+                  <MatIcon>add</MatIcon> Add Workout
+                </Link>
               </li>
               <li>
-                <Link to="/add"><MatIcon>add</MatIcon> Create Workout</Link>
+                <Link to="/docs">
+                  <MatIcon>description</MatIcon> Documentation
+                </Link>
               </li>
             </ul>
           </nav>

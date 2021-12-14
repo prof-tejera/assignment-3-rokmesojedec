@@ -4,7 +4,6 @@
     outline: none;
     background: none;
     cursor: pointer;
-    color: rgb(182, 182, 182);
 
     color: black;
     border-radius: 50px;
@@ -13,7 +12,13 @@
     span {
         vertical-align: middle;
     }
-    &:hover {
+
+    &:disabled{
+        color: rgb(182, 182, 182);
+        cursor: not-allowed;
+    }
+
+    &:not([disabled]):hover {
         color: black;
         border-radius: 50px;
         background: #e0e0e0;

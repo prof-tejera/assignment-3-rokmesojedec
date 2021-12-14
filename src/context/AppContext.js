@@ -42,13 +42,18 @@ const AppProvider = ({ children }) => {
     const [workoutStart, setWorkoutStart] = useState(false);
     const [currentTimer, setCurrentTimer] = useState(null);
     const [startNextTimer, setStartNextTimer] = useState(false);
+    const [isValidInput, setIsValidInput] = useState(false);
+    const [isLastTimer, setIsLastTimer] = useState(false);
+    const [queueBackup, setQueueBackup] = useState([]);
 
-
-    const addWorkout = (workout) => {
+    const addWorkout = workout => {
         let newQueue = [...workoutQueue, workout];
         setWorkoutQueue(newQueue);
         if (newQueue.length) setCurrentWorkout(newQueue[0]);
         else setCurrentWorkout(null);
+
+        if (newQueue.length === 1) setIsLastTimer(true);
+        else setIsLastTimer(false);
     }
 
     useEffect(() => {
@@ -71,10 +76,43 @@ const AppProvider = ({ children }) => {
         workoutQueue.shift();
         let newQueue = [...workoutQueue];
         setWorkoutQueue(newQueue);
-        if (newQueue.length) setCurrentWorkout(newQueue[0]);
+        if (newQueue.length) {
+            setCurrentWorkout(newQueue[0]);
+            setIsLastTimer(false);
+        }
         else {
             setCurrentWorkout(null);
         }
+        if (newQueue.length <= 1) setIsLastTimer(true);
+        ReactTooltip.rebuild();
+    }
+
+    const deleteWorkout = index => {
+        if(index > -1 && index < workoutQueue.length){
+            workoutQueue.splice(index,1);
+            setWorkoutQueue([...workoutQueue]);
+
+            if(index === 0 && workoutQueue.length)
+                setCurrentWorkout(workoutQueue[0]);
+
+            if(workoutQueue.length === 0)
+                setCurrentWorkout(null);
+
+            if (workoutQueue.length === 1) setIsLastTimer(true);
+        }
+    }
+
+    const backupQueue = ()=>{
+        setQueueBackup([...workoutQueue]);
+    }
+
+    const runAgain= ()=>{
+        setWorkoutStart(false);
+        setWorkoutQueue([...queueBackup]);
+        if(queueBackup.length) setCurrentWorkout(queueBackup[0]);
+        if(queueBackup.length <= 1) setIsLastTimer(true);
+        else setIsLastTimer(false); 
+        setQueueBackup([]);
     }
 
     return <AppContext.Provider
@@ -100,7 +138,13 @@ const AppProvider = ({ children }) => {
             setCurrentTimer,
             setWorkoutStart,
             setStartNextTimer,
-            startNextTimer
+            startNextTimer,
+            deleteWorkout,
+            isValidInput, 
+            setIsValidInput,
+            isLastTimer,
+            backupQueue,
+            runAgain
         }}>
         {children}
     </AppContext.Provider>

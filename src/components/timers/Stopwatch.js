@@ -8,8 +8,8 @@ import ReactTooltip from 'react-tooltip';
 
 const Stopwatch = () => {
 
-  const { StopwatchTimer, setDone, isDone, workoutEditMode, 
-    addWorkout, workoutStart, setWorkoutStart, startNextTimer, currentTimer } = useContext(AppContext);
+  const { StopwatchTimer, setDone, isDone, workoutEditMode, isValidInput, setIsValidInput,
+    addWorkout, workoutStart, startNextTimer, currentTimer,  setWorkoutStart } = useContext(AppContext);
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -17,9 +17,6 @@ const Stopwatch = () => {
   useEffect(() => {
     // Add state tick update and complet events to timer object
     StopwatchTimer.pushIntervalFunction((StopwatchTimer) => { setProgress(StopwatchTimer.percentComplete); })
-    // if (!workoutStart)
-    //   StopwatchTimer.onFinished = () => { setPaused(false); if (StopwatchTimer.isTimerComplete) setDone(true); };
-    // else StopwatchTimer.start(false);
 
     setProgress(StopwatchTimer.percentComplete);
 
@@ -31,27 +28,28 @@ const Stopwatch = () => {
       StopwatchTimer.clear(false);
       StopwatchTimer.clean();
     }
-  }, [StopwatchTimer, setDone, workoutStart]);
+  }, [StopwatchTimer, setDone]);
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (!workoutStart && workoutEditMode) {
+    if (workoutEditMode) {
       StopwatchTimer.initializeTime(true, true);
       StopwatchTimer.refresh();
+      setIsValidInput(false);
     }
-  }, [workoutEditMode, StopwatchTimer, workoutStart])
+  }, [workoutEditMode, StopwatchTimer, setIsValidInput])
 
   const start = () => { setWorkoutStart(true); StopwatchTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
-  const pause = () => { setWorkoutStart(false); StopwatchTimer.clear(false); setPaused(false); }
+  const pause = () => {  StopwatchTimer.clear(false); setPaused(false); }
   const reset = () => { StopwatchTimer.reset(); setProgress(StopwatchTimer.percentComplete); }
   const toggleEditMode = () => { pause(); fastForward(); setDone(false); setEditMode(!editMode); pause(); if (editMode) { reset(); } }
-  const fastForward = () => { StopwatchTimer.finishRound(); setProgress(StopwatchTimer.percentComplete); start(); setPaused(false); setDone(true); }
+  const fastForward = () => { StopwatchTimer.finishRound(); setProgress(StopwatchTimer.percentComplete); start(); setPaused(false); }
   const runAgain = () => { reset(); setDone(false); }
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 
   useEffect(() => {
     if (startNextTimer) { StopwatchTimer.start(false); setPaused(true); }
-  }, [startNextTimer, currentTimer, StopwatchTimer])
+  }, [startNextTimer, currentTimer, StopwatchTimer, setIsValidInput])
 
   return <Panel>
     <ProgressCircle progress={workoutEditMode ? 0 : progress} thickness="sm" className="timer">
@@ -60,10 +58,10 @@ const Stopwatch = () => {
         {WorkoutPanel(workoutEditMode, addWorkout, {
           type: "stopwatch",
           timer: StopwatchTimer
-        })}
+        },isValidInput)}
       </div>
     </ProgressCircle>
-    {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode, workoutStart)}
+    {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}
 
     {!workoutEditMode && CongratsPanel(isDone, runAgain)}
   </Panel>;

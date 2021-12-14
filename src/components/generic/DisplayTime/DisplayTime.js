@@ -1,10 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import './DisplayTime.scss';
 import TimeComponent from '../TimeComponent/TimeComponent';
 import PropTypes from 'prop-types';
 import { Timer } from '../../../classes/Timer';
+import { AppContext } from "./../../../context/AppContext";
 
 const DisplayTime = function (props) {
+
+  const { setIsValidInput } = useContext(AppContext);
 
   const [hours, setHours] = useState(0);
   const [minutes, setMinutes] = useState(0);
@@ -51,6 +54,9 @@ const DisplayTime = function (props) {
         onValueChange={e => {
           props.timer[component.name] = e;
           component.update(e);
+
+          setIsValidInput(props.timer.isValidInput());
+
         }}></TimeComponent>)}
   </div>;
 }
