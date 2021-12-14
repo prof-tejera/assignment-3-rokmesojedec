@@ -45,13 +45,17 @@ const AppProvider = ({ children }) => {
     const [isValidInput, setIsValidInput] = useState(false);
     const [isLastTimer, setIsLastTimer] = useState(false);
     const [queueBackup, setQueueBackup] = useState([]);
+    const [triggerPopQueue, setTriggerPopQueue] = useState(0);
+    const [queueDuration, setQueueDuration] = useState({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
 
     const addWorkout = workout => {
+        workout.timeString = new Timer({ serializedState: GetSerializedTimerFromState(workout) }).toString();
         let newQueue = [...workoutQueue, workout];
+        setQueueDuration(CalculateQueueDuration(newQueue));
+        setQueueBackup([...workoutQueue, workout]);
         setWorkoutQueue(newQueue);
         if (newQueue.length) setCurrentWorkout(newQueue[0]);
         else setCurrentWorkout(null);
-
         if (newQueue.length === 1) setIsLastTimer(true);
         else setIsLastTimer(false);
     }
@@ -68,52 +72,115 @@ const AppProvider = ({ children }) => {
         { title: "Tabata", C: <Tabata title={"Tabata"} /> },
     ];
 
-    const toggleWorkout = () => {
-        setWorkoutStart(!workoutStart);
+    // Sums up times from all workouts in a queue. Creates serialized timer state
+    const CalculateQueueDuration = queue => {
+        const intervalTime = {
+            hours: 0,
+            minutes: 0,
+            seconds: 0,
+            milliseconds: 0,
+        };
+        queue.forEach(workout => {
+            const config = GetSerializedTimerFromState(workout);
+            ["hours", "minutes", "seconds", "milliseconds"].forEach(timeUnit => {
+                if (config[timeUnit] && config[timeUnit] > 0) intervalTime[timeUnit] += config[timeUnit];
+            })
+        })
+        return intervalTime;
     }
 
+    // Calculates time string from serialized timer config
+    const GetSerializedTimerFromState = (state) => {
+        if (state && state.type)
+            switch (state.type) {
+                case "stopwatch":
+                case "countdown":
+                    return state.config;
+
+                case "xy":
+                    let stateCopy = { ...state.config };
+                    stateCopy.rounds = 1;
+                    let { rounds } = state.config;
+                    for (const [key, value] of Object.entries(stateCopy)) {
+                        if (key !== "rounds") stateCopy[key] = value * rounds;
+                    }
+                    return stateCopy;
+                case "tabata":
+                    const { timers } = state.config;
+                    const intervalTime = { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+                    for (let timer of timers) {
+                        for (const [key, value] of Object.entries(timer)) {
+                            if (key !== "rounds" && value) intervalTime[key] += value;
+                        }
+                    }
+                    for (const [key] of Object.entries(intervalTime)) {
+                        intervalTime[key] *= state.config.rounds;
+                    }
+                    return intervalTime;
+                default:
+                    return { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+            }
+        return { hours: 0, minutes: 0, seconds: 0, milliseconds: 0 };
+    };
+
+    // Remove Workout From Queue - updates queue object and updates current timer
     const popQueue = () => {
         workoutQueue.shift();
         let newQueue = [...workoutQueue];
         setWorkoutQueue(newQueue);
         if (newQueue.length) {
             setCurrentWorkout(newQueue[0]);
-            setIsLastTimer(false);
         }
         else {
             setCurrentWorkout(null);
         }
         if (newQueue.length <= 1) setIsLastTimer(true);
+        else setIsLastTimer(false);
         ReactTooltip.rebuild();
     }
 
+    // Removes workout at index from queue. Triggers updates
     const deleteWorkout = index => {
-        if(index > -1 && index < workoutQueue.length){
-            workoutQueue.splice(index,1);
+        if (index > -1 && index < workoutQueue.length) {
+            workoutQueue.splice(index, 1);
             setWorkoutQueue([...workoutQueue]);
+            setQueueBackup([...workoutQueue]);
 
-            if(index === 0 && workoutQueue.length)
+            setQueueDuration(CalculateQueueDuration(workoutQueue));
+
+            if (index === 0 && workoutQueue.length)
                 setCurrentWorkout(workoutQueue[0]);
 
-            if(workoutQueue.length === 0)
+            if (workoutQueue.length === 0)
                 setCurrentWorkout(null);
 
             if (workoutQueue.length === 1) setIsLastTimer(true);
+            if (workoutQueue.length === 0) setIsLastTimer(false);
+            setWorkoutStart(false);
         }
     }
 
-    const backupQueue = ()=>{
-        setQueueBackup([...workoutQueue]);
+    // Restart Queue from backup
+    const runAgain = () => {
+        setWorkoutStart(false);
+        let newQueue = [...queueBackup];
+        setQueueDuration(CalculateQueueDuration(newQueue));
+        setWorkoutQueue(newQueue);
+        if (newQueue.length) setCurrentWorkout(newQueue[0]);
+        if (newQueue.length <= 1) setIsLastTimer(true);
+        else setIsLastTimer(false);
     }
 
-    const runAgain= ()=>{
-        setWorkoutStart(false);
-        setWorkoutQueue([...queueBackup]);
-        if(queueBackup.length) setCurrentWorkout(queueBackup[0]);
-        if(queueBackup.length <= 1) setIsLastTimer(true);
-        else setIsLastTimer(false); 
-        setQueueBackup([]);
-    }
+    // Redefine onFinished events for timers
+    [CountDownTimer, StopwatchTimer, XYTimer, IntervalTabata].forEach(timer => {
+        timer.onFinished = () => {
+            if (!workoutEditMode) {
+                popQueue();
+                setStartNextTimer(!isLastTimer);
+                //setQueueDuration(CalculateQueueDuration(workoutQueue));
+            }
+        }
+    });
 
     return <AppContext.Provider
         value={{
@@ -131,7 +198,6 @@ const AppProvider = ({ children }) => {
             workoutQueue,
             setWorkoutEditMode,
             workoutStart,
-            toggleWorkout,
             currentWorkout,
             popQueue,
             currentTimer,
@@ -140,11 +206,13 @@ const AppProvider = ({ children }) => {
             setStartNextTimer,
             startNextTimer,
             deleteWorkout,
-            isValidInput, 
+            isValidInput,
             setIsValidInput,
             isLastTimer,
-            backupQueue,
-            runAgain
+            runAgain,
+            triggerPopQueue,
+            setTriggerPopQueue,
+            queueDuration
         }}>
         {children}
     </AppContext.Provider>

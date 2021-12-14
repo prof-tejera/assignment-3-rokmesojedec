@@ -29,7 +29,7 @@ function App() {
             <h1 className="nowrap" href="index.html">
               Rok's CSCI E39 Assignment #3
             </h1>
-            <ul className="hover-light children-p-2 text-light">
+            <ul className="hover-light children-p-2 text-light nav-list">
               <li>
                 <Link to="/">
                   <MatIcon>timer</MatIcon> Start Workout 

@@ -8,8 +8,10 @@ import ReactTooltip from 'react-tooltip';
 
 const Stopwatch = () => {
 
-  const { StopwatchTimer, setDone, isDone, workoutEditMode, isValidInput, setIsValidInput,
-    addWorkout, workoutStart, startNextTimer, currentTimer,  setWorkoutStart } = useContext(AppContext);
+  const { StopwatchTimer, setDone, isDone, workoutEditMode, 
+          isValidInput, setIsValidInput, addWorkout, workoutStart, 
+          startNextTimer, currentTimer, setWorkoutStart } = useContext(AppContext);
+
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -32,15 +34,15 @@ const Stopwatch = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       StopwatchTimer.initializeTime(true, true);
       StopwatchTimer.refresh();
       setIsValidInput(false);
     }
-  }, [workoutEditMode, StopwatchTimer, setIsValidInput])
+  }, [workoutEditMode, StopwatchTimer, setIsValidInput, workoutStart])
 
   const start = () => { setWorkoutStart(true); StopwatchTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
-  const pause = () => {  StopwatchTimer.clear(false); setPaused(false); }
+  const pause = () => { setWorkoutStart(false); StopwatchTimer.clear(false); setPaused(false); }
   const reset = () => { StopwatchTimer.reset(); setProgress(StopwatchTimer.percentComplete); }
   const toggleEditMode = () => { pause(); fastForward(); setDone(false); setEditMode(!editMode); pause(); if (editMode) { reset(); } }
   const fastForward = () => { StopwatchTimer.finishRound(); setProgress(StopwatchTimer.percentComplete); start(); setPaused(false); }
@@ -58,7 +60,7 @@ const Stopwatch = () => {
         {WorkoutPanel(workoutEditMode, addWorkout, {
           type: "stopwatch",
           timer: StopwatchTimer
-        },isValidInput)}
+        }, isValidInput)}
       </div>
     </ProgressCircle>
     {!isDone && !workoutEditMode && ButtonsPanel(paused, start, pause, reset, fastForward, toggleEditMode, editMode)}

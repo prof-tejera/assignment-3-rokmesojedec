@@ -1,5 +1,5 @@
 import { AppContext } from "./../context/AppContext";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { CongratsPanel } from "./../utils/helpers";
 import "./TimersView.scss";
@@ -17,7 +17,6 @@ const App = () => {
     CountDownTimer,
     IntervalTabata,
     XYTimer,
-    popQueue,
     setWorkoutStart,
     setCurrentTimer,
     setWorkoutEditMode,
@@ -26,8 +25,7 @@ const App = () => {
     setStartNextTimer,
     isLastTimer,
     runAgain,
-    backupQueue,
-    workoutStart
+    workoutQueue
   } = useContext(AppContext);
 
   useEffect(() => {
@@ -35,24 +33,15 @@ const App = () => {
     setWorkoutStart(false);
   }, [setWorkoutEditMode, setWorkoutStart]);
 
-
-  const backup = useRef(backupQueue);
-
-  useEffect(()=>{
-    if(workoutStart) backup.current();
-  }, [workoutStart])
-
-  const popQueueRef = useRef(popQueue);
+  useEffect(() => {
+    if (currentTimer === null) setWorkoutStart(false);
+  }, [currentTimer, setWorkoutStart])
 
   useEffect(() => {
     ReactTooltip.rebuild();
 
     const PrepareTimer = (Timer, TimerComponent, state) => {
       Timer.deserialize(state.config);
-      Timer.onFinished = () => {
-        popQueueRef.current();
-        setStartNextTimer(true);
-      };
       setCurrentTimer(TimerComponent);
     };
 
@@ -84,19 +73,21 @@ const App = () => {
     IntervalTabata,
     StopwatchTimer,
     XYTimer,
-    setCurrentTimer
+    setCurrentTimer,
+    isLastTimer,
+    workoutQueue
   ]);
 
   return (
     <div className="grid typescale-md-major-third grid-col-span-12">
       <WorkoutDisplay />
       {currentTimer}
-      { isLastTimer && currentTimer === null && <>
+      {isLastTimer && currentTimer === null && <>
         {CongratsPanel(true, runAgain)}
       </>}
       {!isLastTimer && !currentTimer && (
         <div className="text-center m-t-5">
-          The workout queue is empty! 
+          The workout queue is empty!
           <p className="m-t-2">Get started by <Link to="/add">adding some workouts </Link></p>
         </div>
       )}

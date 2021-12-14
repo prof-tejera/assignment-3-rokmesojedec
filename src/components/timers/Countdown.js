@@ -41,12 +41,12 @@ const Countdown = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       CountDownTimer.initializeTime(true, true);
       CountDownTimer.refresh();
       setIsValidInput(false);
     }
-  }, [workoutEditMode, CountDownTimer, setIsValidInput])
+  }, [workoutEditMode, CountDownTimer, setIsValidInput, workoutStart])
 
   useEffect(() => {
     if (startNextTimer) { CountDownTimer.start(false); setPaused(true); }

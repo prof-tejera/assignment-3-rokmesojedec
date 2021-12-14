@@ -10,7 +10,7 @@ import ReactTooltip from 'react-tooltip';
 const XY = () => {
 
   const { XYTimer, isDone, setDone, workoutEditMode, addWorkout, isValidInput, setIsValidInput,
-        workoutStart, startNextTimer, currentTimer, setWorkoutStart } = useContext(AppContext);
+    workoutStart, startNextTimer, currentTimer, setWorkoutStart } = useContext(AppContext);
 
   const [editMode, setEditMode] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -42,15 +42,15 @@ const XY = () => {
 
   // reset time to zero when adding timers in workout mode
   useEffect(() => {
-    if (workoutEditMode) {
+    if (!workoutStart && workoutEditMode) {
       XYTimer.initializeTime(true, true);
       XYTimer.refresh();
       setIsValidInput(false);
     }
-  }, [workoutEditMode, XYTimer, setIsValidInput])
+  }, [workoutEditMode, XYTimer, setIsValidInput, workoutStart])
 
   const start = () => { setWorkoutStart(true); XYTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
-  const pause = () => { XYTimer.clear(false); setPaused(false); }
+  const pause = () => { setWorkoutStart(false); XYTimer.clear(false); setPaused(false); }
   const reset = () => { XYTimer.reset(); setProgress(XYTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
   const fastForward = () => { XYTimer.finishRound(); setProgress(XYTimer.percentComplete); XYTimer.start(false); }

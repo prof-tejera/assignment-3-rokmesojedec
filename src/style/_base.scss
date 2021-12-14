@@ -15,6 +15,16 @@ body {
     background-color: #e0e0e0;
 }
 
+.nav-list {
+    li {
+        padding:0 !important;
+        a {
+            padding: 0.5rem;
+            font-size: 1rem;
+        }
+    }
+}
+
 .white-bg {
     background: var(--light-color) !important;
 }
@@ -118,7 +128,7 @@ a {
     }
 }
 
-.workout-panel{
+.workout-panel {
     display: flex;
     justify-content: space-evenly;
     margin: 5rem auto 0 auto;
@@ -128,7 +138,6 @@ a {
     box-shadow: inset 11.41px 11.41px 15px #d4d4d4, inset -11.41px -11.41px 15px #ececec;
     padding: 1.5rem 5rem;
 }
-
 
 .buttons-panel {
     @extend .workout-panel;
@@ -145,7 +154,6 @@ a {
         color: var(--success-color);
     }
 }
-
 
 //https://www.w3schools.com/howto/howto_css_hide_arrow_number.asp
 /* Chrome, Safari, Edge, Opera */

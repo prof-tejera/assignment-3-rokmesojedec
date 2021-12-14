@@ -1,60 +1,51 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../../../context/AppContext";
 import { Timer } from "../../../classes/Timer";
 import Button from "./../Button/Button";
 import MatIcon from "./../MatIcon";
+import ProgressBar from "../ProgressBar/ProgressBar";
 
 import "./WorkoutDisplay.scss";
 
-const DurationString = (state) => {
-  if (state && state.type)
-    switch (state.type) {
-      case "stopwatch":
-      case "countdown":
-        return new Timer({ serializedState: state.config }).toString();
-      case "xy":
-        let stateCopy = { ...state.config };
-        stateCopy.rounds = 1;
-        let { rounds } = state.config;
-
-        for (const [key, value] of Object.entries(stateCopy)) {
-          if (key !== "rounds") stateCopy[key] = value * rounds;
-        }
-        return new Timer({ serializedState: stateCopy }).toString();
-      case "tabata":
-        const { timers } = state.config;
-        const intervalTime = {
-          hours: 0,
-          minutes: 0,
-          seconds: 0,
-          milliseconds: 0,
-        };
-        for (let timer of timers) {
-          for (const [key, value] of Object.entries(timer)) {
-            if (key !== "rounds" && value) intervalTime[key] += value;
-          }
-        }
-
-        for (const [key] of Object.entries(intervalTime)) {
-          intervalTime[key] *= state.config.rounds;
-        }
-
-        return new Timer({ serializedState: intervalTime }).toString();
-      default:
-        return {};
-    }
-  return "";
-};
+const WorkoutTimer = new Timer();
 
 const WorkoutDisplay = () => {
-  const { workoutQueue, deleteWorkout, workoutStart } = useContext(AppContext);
+  const [timeString, setTimeString] = useState("");
+  const { workoutQueue, deleteWorkout, workoutStart, queueDuration } = useContext(AppContext);
+  const [progress, setProgress] = useState(10000);
+
+  useEffect(() => {
+    WorkoutTimer.deserialize(queueDuration);
+    setTimeString(WorkoutTimer.toString());
+  }, [queueDuration])
+
+  useEffect(() => {
+    if (workoutStart) WorkoutTimer.start(false);
+    else WorkoutTimer.clear(false);
+  }, [workoutStart]);
+
+  useEffect(() => {
+    // Add state tick update and complet events to CountDownTimer object
+    WorkoutTimer.pushIntervalFunction((WorkoutTimer) => { setTimeString(WorkoutTimer.toString()); setProgress(WorkoutTimer.percentComplete) });
+    return () => {
+      // stop and remove intervals on unmount
+      WorkoutTimer.clear(false);
+      WorkoutTimer.clean();
+    }
+  }, []);
+
   return (
     <>
-      {workoutQueue.length > 0 && (
+      {workoutQueue.length > 0 && (<>
+        <ProgressBar progress={progress}></ProgressBar>
         <div className="workout-display">
+          <div className="text-center m-r-3">
+            <div className="bold">Workout</div>
+            {timeString}
+          </div>
           {workoutQueue.map((workout, index) => {
             return (
-              <div key={index} className="workout">
+              <div key={index} className={["workout", index === 0 ? "current" : "other"].join(" ")}>
                 {!workoutStart && (
                   <Button
                     onButtonClick={() => {
@@ -64,11 +55,12 @@ const WorkoutDisplay = () => {
                     <MatIcon>close</MatIcon>
                   </Button>
                 )}
-                <h6>{workout.type}</h6> {DurationString(workout)}
+                <h6>{workout.type}</h6> {workout.timeString}
               </div>
             );
           })}
         </div>
+      </>
       )}
     </>
   );

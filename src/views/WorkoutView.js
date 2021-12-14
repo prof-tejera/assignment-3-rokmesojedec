@@ -5,11 +5,14 @@ import { useContext, useEffect } from "react";
 import { AppContext } from "../context/AppContext";
 import WorkoutDisplay from "../components/generic/WorkoutDisplay/WorkoutDispaly";
 
+import ReactTooltip from "react-tooltip";
 
 const WorkoutView = () => {
 
   const { timers, timerIndex, setTimerIndex, setWorkoutEditMode, setWorkoutStart, setStartNextTimer } = useContext(AppContext);
   const CurrentTimer = timers.filter((timers, index) => index === timerIndex)[0].C;
+
+  ReactTooltip.rebuild();
 
   useEffect(() => {
     setWorkoutEditMode(true);

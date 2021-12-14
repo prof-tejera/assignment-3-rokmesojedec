@@ -31,9 +31,10 @@ export const ButtonsPanel = (paused, start, pause, reset, fastForward, toggleEdi
 }
 
 export const WorkoutPanel = (workoutEditMode, addWorkout, value, isValid) => {
-    return (workoutEditMode && (<div className="text-center m-t-1">  <Button disabled={!isValid} className='p-1 bold' onButtonClick={() => {
-        addWorkout({ type: value.type, config: value.timer.serialize() });
-    }}><MatIcon>fitness_center</MatIcon> Add Workout</Button></div>))
+    return (workoutEditMode && (<div className="text-center m-t-1">
+        <Button disabled={!isValid} tooltip={isValid ? "Enter numerical values for times and rounds" : null} className='p-1 bold' onButtonClick={() => {
+            addWorkout({ type: value.type, config: value.timer.serialize() });
+        }}><MatIcon>fitness_center</MatIcon> Add Workout</Button></div>))
 };
 
 export const CongratsPanel = (show, startFunc) => {

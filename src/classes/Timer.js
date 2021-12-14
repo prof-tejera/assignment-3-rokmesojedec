@@ -361,6 +361,9 @@ export class Timer {
 
   toString() {
     let timeString = [];
+    if (this.currentYears) timeString.push(`${this.currentDays}y`);
+    if (this.currentMonths) timeString.push(`${this.currentDays}m`);
+    if (this.currentDays) timeString.push(`${this.currentDays}d`);
     if (this.currentHours) timeString.push(`${this.currentHours}h`);
     if (this.currentMinutes) timeString.push(`${this.currentMinutes}m`);
     if (this.currentSeconds) timeString.push(`${this.currentSeconds}s`);
