@@ -45,7 +45,7 @@ const Documentation = () => {
             unpack(["disabled", "disables / enables button", "bool", "false"]),
             unpack(["className", "sets HTML class name", "string", "''"]),
             unpack(["tooltip", "adds on hover tooltip", "string", "null"]),
-            unpack(["onClick", "on click method", "func", "() => { }"]),
+            unpack(["onButtonClick", "on click method", "func", "() => { }"]),
           ]}
         />
         <DocumentComponent

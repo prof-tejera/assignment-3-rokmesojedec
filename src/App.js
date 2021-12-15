@@ -6,6 +6,7 @@ import WorkoutView from "./views/WorkoutView";
 import "material-icons/iconfont/material-icons.css";
 import MatIcon from "./components/generic/MatIcon";
 
+import "./style/roKit.css";
 import "./style/main.scss";
 
 function App() {

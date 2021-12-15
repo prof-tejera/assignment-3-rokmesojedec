@@ -32,6 +32,7 @@ Currently we have two routes `/` and `/docs`. We are going to be modifying our `
 - When user clicks "Add" from **Home** screen, they are routed to this page, where they can choose the type of timer and configure all inputs for each timer. After configuring, the user confirms and the timer is added to the list.
 - The `/add` page should allow the user to configure any of the four timers (stopwatch, countdown, XY, and tabata)
 - The user should be able to go back to the home page from here
+
 ## Installing and Running the project
 
 As you have noticed this repository is empty. To begin this assignment you must copy over all of our files from A2 into this repo. **Do not copy over the `.git` directory and the `.gitignore` file.**. 
@@ -67,3 +68,8 @@ For other ways to deploy see https://github.com/prof-tejera/react-deployment-cod
 ## Bonus
 
 - Add full test coverage using Cypress.io. This will require that you get your tests running locally and then add a new Github action that will run the tests every time you commit to GitHub. Note that the Cypress setup is not part of this project and must be configured by you (max 8 points)
+
+
+## URL 
+
+(http://mesojedec.io:3005/cscie39/)
