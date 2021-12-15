@@ -67,8 +67,8 @@ const Tabata = () => {
 
   const start = () => { setWorkoutStart(true); IntervalTabata.start(false); setPaused(true); setEditMode(false); setDone(false); };
   const pause = () => { setWorkoutStart(false); IntervalTabata.clear(false); setPaused(false); };
-  const reset = () => { pause(); IntervalTabata.reset(); updateInterval(); };
-  const fastForward = () => { IntervalTabata.finish(); if (!paused) pause(); }
+  const reset = () => { IntervalTabata.reset(); if(paused) IntervalTabata.start(); updateInterval(); };
+  const fastForward = () => { IntervalTabata.finish(); if(IntervalTabata.onStart) IntervalTabata.onStart() }
   const toggleEditMode = () => { pause(); IntervalTabata.reset(); setEditMode(!editMode); };
   const updateRound = (value) => { IntervalTabata.rounds = value; updateInterval(); }
   const runAgain = () => { reset(); setDone(false); }

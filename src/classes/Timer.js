@@ -33,6 +33,8 @@ export class Timer {
     // and when countdownMode is true, we count up to the passed value
     intervalFunctions = [], // functions which are executed during each tick of the timer,
     onFinished = null,
+    onStart = null,
+    onReset = null,
     stopWatchMode = false,
     serializedState = null,
   } = {}) {
@@ -54,6 +56,8 @@ export class Timer {
     this.intervalFunctions = [...intervalFunctions];
     this.countdownMode = countdownMode;
     this.onFinished = onFinished;
+    this.onStart = onStart;
+    this.onReset = onReset;
     this.stopWatchMode = stopWatchMode;
     this._isRunning = false;
     this._isDone = false;
@@ -81,32 +85,54 @@ export class Timer {
     this.initializeTime(this.countdownMode);
   }
 
-  deserialize(serializedState) {
-    this._years = 0;
-    this._months = 0;
-    this._days = 0;
-    this._hours = 0;
-    this._minutes = 0;
-    this._seconds = 0;
-    this._milliseconds = 0;
-
-    for (let timeUnit of [
-      "years",
-      "months",
-      "days",
-      "hours",
-      "minutes",
-      "seconds",
-      "milliseconds",
-    ]) {
-      if (serializedState[timeUnit])
-        this["_" + timeUnit] = serializedState[timeUnit];
+  deserialize(serializedState, setCurrentTime = false) 
+  {
+    if (setCurrentTime) {
+      this._currentTime = 0;
+      let millisecondsTotal = 0;
+      if (serializedState.milliseconds)
+        millisecondsTotal += serializedState.milliseconds;
+      if (serializedState.seconds)
+        millisecondsTotal += serializedState.seconds * SECOND;
+      if (serializedState.minutes)
+        millisecondsTotal += serializedState.minutes * MINUTE;
+      if (serializedState.hours)
+        millisecondsTotal += serializedState.hour * HOUR;
+      if (serializedState.days)
+        millisecondsTotal += serializedState.days * DAY;
+      if (serializedState.months)
+        millisecondsTotal += serializedState.months * MONTH;
+      if (serializedState.years)
+        millisecondsTotal += serializedState.years * YEAR;
+      this._currentTime = millisecondsTotal;
+    } else {
+      this._years = 0;
+      this._months = 0;
+      this._days = 0;
+      this._hours = 0;
+      this._minutes = 0;
+      this._seconds = 0;
+      this._milliseconds = 0;
+      for (let timeUnit of [
+        "years",
+        "months",
+        "days",
+        "hours",
+        "minutes",
+        "seconds",
+        "milliseconds",
+      ]) {
+        if (serializedState[timeUnit]) {
+          this["_" + timeUnit] = serializedState[timeUnit];
+        }
+      }
     }
 
     if (serializedState.rounds)
       this._rounds = this._currentRound = serializedState.rounds;
     else this._rounds = this._currentRound = 1;
-    this.initializeTime(this.countdownMode);
+
+    if (!setCurrentTime) this.initializeTime(this.countdownMode);
     this.refresh();
   }
 
@@ -188,8 +214,9 @@ export class Timer {
     }
   }
 
-  start(initializeTime = true) {
+  start(initializeTime = true, triggerOnStart = true) {
     if (this.countdownInterval === null) {
+      if (this.onStart && triggerOnStart) this.onStart(this);
       this._isDone = false;
       if (initializeTime || this.isTimerComplete)
         this.initializeTime(this.countdownMode);
@@ -226,7 +253,8 @@ export class Timer {
     }
   }
 
-  reset() {
+  reset(triggerOnReset = true) {
+    if(this.onReset && triggerOnReset) this.onReset(this);
     this.initializeTime(this.countdownMode);
     this.intervalFunctions.forEach((func) => {
       func(this);
@@ -281,15 +309,18 @@ export class Timer {
   }
 
   get percentComplete() {
+    return Math.floor(
+      (10000 * this.timeElapsed) / this._totalTime
+    );
+  }
+
+  get timeElapsed(){
     let rounds;
     if (this.countdownMode) {
       if (this._currentRound - 1 < 0) return 0;
       rounds = this._currentRound - 1;
     } else rounds = this._roundsCompleted;
-
-    return Math.floor(
-      (10000 * (rounds * this._roundTime + this._currentTime)) / this._totalTime
-    );
+    return rounds * this._roundTime + this._currentTime;
   }
 
   get minutePercentComplete() {
@@ -379,8 +410,7 @@ export class Timer {
         isNaN(this.seconds) ||
         isNaN(this.minutes) ||
         isNaN(this.hours)
-      ) 
-      &&
+      ) &&
       !(
         this.hours === 0 &&
         this.minutes === 0 &&

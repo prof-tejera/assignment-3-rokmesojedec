@@ -10,6 +10,8 @@ import ReactTooltip from 'react-tooltip';
 
 export const AppContext = React.createContext({});
 
+const WorkoutTimer = new Timer();
+
 const CountDownTimer = new Timer({
     minutes: 0,
     seconds: 10,
@@ -131,12 +133,14 @@ const AppProvider = ({ children }) => {
         if (newQueue.length) {
             setCurrentWorkout(newQueue[0]);
         }
-        else {
-            setCurrentWorkout(null);
-        }
+        else { setCurrentWorkout(null); }
         if (newQueue.length <= 1) setIsLastTimer(true);
         else setIsLastTimer(false);
         ReactTooltip.rebuild();
+    }
+
+    const GetQueueDuration = ()=>{
+        setQueueDuration(CalculateQueueDuration(workoutQueue));
     }
 
     // Removes workout at index from queue. Triggers updates
@@ -145,15 +149,9 @@ const AppProvider = ({ children }) => {
             workoutQueue.splice(index, 1);
             setWorkoutQueue([...workoutQueue]);
             setQueueBackup([...workoutQueue]);
-
             setQueueDuration(CalculateQueueDuration(workoutQueue));
-
-            if (index === 0 && workoutQueue.length)
-                setCurrentWorkout(workoutQueue[0]);
-
-            if (workoutQueue.length === 0)
-                setCurrentWorkout(null);
-
+            if (index === 0 && workoutQueue.length) setCurrentWorkout(workoutQueue[0]);
+            if (workoutQueue.length === 0) setCurrentWorkout(null);
             if (workoutQueue.length === 1) setIsLastTimer(true);
             if (workoutQueue.length === 0) setIsLastTimer(false);
             setWorkoutStart(false);
@@ -173,11 +171,16 @@ const AppProvider = ({ children }) => {
 
     // Redefine onFinished events for timers
     [CountDownTimer, StopwatchTimer, XYTimer, IntervalTabata].forEach(timer => {
+        timer.onStart = timer => { 
+            WorkoutTimer.deserialize(CalculateQueueDuration(workoutQueue), true);
+        }
+        timer.onReset = timer => { 
+            WorkoutTimer.deserialize(CalculateQueueDuration(workoutQueue), true);
+        }
         timer.onFinished = () => {
             if (!workoutEditMode) {
                 popQueue();
                 setStartNextTimer(!isLastTimer);
-                //setQueueDuration(CalculateQueueDuration(workoutQueue));
             }
         }
     });
@@ -191,6 +194,7 @@ const AppProvider = ({ children }) => {
             XYTimer,
             StopwatchTimer,
             IntervalTabata,
+            WorkoutTimer,
             isDone,
             setDone,
             workoutEditMode,
@@ -212,7 +216,8 @@ const AppProvider = ({ children }) => {
             runAgain,
             triggerPopQueue,
             setTriggerPopQueue,
-            queueDuration
+            queueDuration,
+            GetQueueDuration
         }}>
         {children}
     </AppContext.Provider>

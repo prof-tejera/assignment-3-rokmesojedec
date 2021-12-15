@@ -15,11 +15,11 @@ const Countdown = () => {
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(10000);
 
-  const start = () => {  setWorkoutStart(true); setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
-  const pause = () => {  CountDownTimer.clear(false); setPaused(false); }
-  const reset = () => { CountDownTimer.reset(); setProgress(CountDownTimer.percentComplete); }
+  const start = () => {  setWorkoutStart(true); setDone(false); CountDownTimer.start(false, false); setPaused(true); setEditMode(false); }
+  const pause = () => {  setWorkoutStart(false); CountDownTimer.clear(false); setPaused(false); }
+  const reset = () => { CountDownTimer.reset(); setProgress(CountDownTimer.percentComplete);}
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
-  const fastForward = () => { CountDownTimer.finishRound(); setProgress(CountDownTimer.percentComplete); start(); }
+  const fastForward = () => { CountDownTimer.onFinished(); CountDownTimer.onStart() }//setProgress(CountDownTimer.percentComplete); }
   const runAgain = () => { reset(); setDone(false); }
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 

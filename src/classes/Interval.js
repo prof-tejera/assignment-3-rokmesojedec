@@ -6,6 +6,9 @@ export class Interval {
         rounds = 1,
         completedRounds = 0,
         serializedState = null,
+        onStart = null,
+        onFinished = null,
+        onReset = null,
     } = {}) {
         if (serializedState) {
             this.deserialize(serializedState);
@@ -18,6 +21,10 @@ export class Interval {
         this._completedRounds = completedRounds;
         this._currentTimerIndex = 0;
         this.intializeTimers();
+
+        this.onReset = onReset;
+        this.onStart = onStart;
+        this.onFinished = onFinished;
     }
 
     deserialize(state) {
@@ -60,7 +67,7 @@ export class Interval {
                 if (this._completedRounds < this.rounds)
                     this.timers[this._currentTimerIndex].start();
                 else if (this.onFinished && typeof this.onFinished === "function") {
-                    this.onFinished();
+                    this.onFinished(this);
                 }
             };
         }
@@ -73,6 +80,14 @@ export class Interval {
 
     get currentTime() {
         return (this.currentRound - 1) * this.roundTime + this.currentRoundTime;
+    }
+
+    valueOf(){
+        return this.currentTime;
+    }
+
+    get timeElapsed() {
+        return this.totalTime - this.currentTime;
     }
 
     get percentComplete() {
@@ -119,6 +134,7 @@ export class Interval {
     }
 
     start(initializeTime = true) {
+        if (this.onStart) this.onStart(this);
         if (this.currentRound === 0) {
             this._completedRounds = 0;
             this.timers.forEach((timer) => timer.reset());
@@ -131,6 +147,7 @@ export class Interval {
     }
 
     reset() {
+        if(this.onReset) this.onReset(this);
         this.timers.forEach((timer) => {
             timer.clear(false);
             timer.reset();

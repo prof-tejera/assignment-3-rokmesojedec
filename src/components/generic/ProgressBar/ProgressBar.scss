@@ -7,6 +7,8 @@ $thickness: 0.525rem;
     padding: 0;
     margin: 0;
 
+    transition: 0.2s ease width;
+
     &.top, &.bottom, &.left, &.right {
         position: absolute;
     }

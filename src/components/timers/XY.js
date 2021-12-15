@@ -53,7 +53,7 @@ const XY = () => {
   const pause = () => { setWorkoutStart(false); XYTimer.clear(false); setPaused(false); }
   const reset = () => { XYTimer.reset(); setProgress(XYTimer.percentComplete); }
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
-  const fastForward = () => { XYTimer.finishRound(); setProgress(XYTimer.percentComplete); XYTimer.start(false); }
+  const fastForward = () => { XYTimer.onFinished(); if(XYTimer.onStart) XYTimer.onStart(); }
   const updateRound = (value) => { XYTimer.rounds = value; setRound(XYTimer.currentRound); }
   const runAgain = () => { reset(); setDone(false); }
 

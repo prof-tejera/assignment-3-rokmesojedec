@@ -41,11 +41,11 @@ const Stopwatch = () => {
     }
   }, [workoutEditMode, StopwatchTimer, setIsValidInput, workoutStart])
 
-  const start = () => { setWorkoutStart(true); StopwatchTimer.start(false); setPaused(true); setEditMode(false); setDone(false); }
+  const start = () => { setWorkoutStart(true); StopwatchTimer.start(false, false); setPaused(true); setEditMode(false); setDone(false); }
   const pause = () => { setWorkoutStart(false); StopwatchTimer.clear(false); setPaused(false); }
   const reset = () => { StopwatchTimer.reset(); setProgress(StopwatchTimer.percentComplete); }
   const toggleEditMode = () => { pause(); fastForward(); setDone(false); setEditMode(!editMode); pause(); if (editMode) { reset(); } }
-  const fastForward = () => { StopwatchTimer.finishRound(); setProgress(StopwatchTimer.percentComplete); start(); setPaused(false); }
+  const fastForward = () => { StopwatchTimer.onFinished(); if(StopwatchTimer.onStart) StopwatchTimer.onStart() }
   const runAgain = () => { reset(); setDone(false); }
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 

@@ -1,28 +1,25 @@
 import { useContext, useState, useEffect } from "react";
 import { AppContext } from "../../../context/AppContext";
-import { Timer } from "../../../classes/Timer";
 import Button from "./../Button/Button";
 import MatIcon from "./../MatIcon";
 import ProgressBar from "../ProgressBar/ProgressBar";
 
 import "./WorkoutDisplay.scss";
 
-const WorkoutTimer = new Timer();
-
 const WorkoutDisplay = () => {
   const [timeString, setTimeString] = useState("");
-  const { workoutQueue, deleteWorkout, workoutStart, queueDuration } = useContext(AppContext);
+  const { workoutQueue, deleteWorkout, workoutStart, queueDuration, WorkoutTimer } = useContext(AppContext);
   const [progress, setProgress] = useState(10000);
 
   useEffect(() => {
     WorkoutTimer.deserialize(queueDuration);
     setTimeString(WorkoutTimer.toString());
-  }, [queueDuration])
+  }, [queueDuration, WorkoutTimer])
 
   useEffect(() => {
     if (workoutStart) WorkoutTimer.start(false);
     else WorkoutTimer.clear(false);
-  }, [workoutStart]);
+  }, [workoutStart, WorkoutTimer]);
 
   useEffect(() => {
     // Add state tick update and complet events to CountDownTimer object
@@ -32,7 +29,7 @@ const WorkoutDisplay = () => {
       WorkoutTimer.clear(false);
       WorkoutTimer.clean();
     }
-  }, []);
+  }, [WorkoutTimer]);
 
   return (
     <>
