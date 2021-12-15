@@ -6,9 +6,6 @@ import WorkoutView from "./views/WorkoutView";
 import "material-icons/iconfont/material-icons.css";
 import MatIcon from "./components/generic/MatIcon";
 
-// Source: https://github.com/rokmesojedec/roKit
-//This Framework was developed by me
-import "./assets/rokit/dist/roKit.css";
 import "./style/main.scss";
 
 function App() {

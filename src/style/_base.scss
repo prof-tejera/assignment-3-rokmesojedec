@@ -91,12 +91,6 @@ body {
 // Generated with https://neumorphism.io/#ededed
 .timer {
     background: $neu-bg;
-    // border-radius: 50%;
-    // // & > .overlay{
-    // //     box-shadow:;
-    // // }
-    // box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
-
     border-radius: 50%;
     background: #e0e0e0;
     box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
@@ -110,10 +104,6 @@ body {
     .InnerCircle {
         box-shadow: inset 11px 11px 22px #d0d0d0, inset -11px -11px 22px #f0f0f0;
     }
-
-    // border-radius: 50%;
-    // background: #e0e0e0;
-    // box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
 }
 
 .panel-morph {

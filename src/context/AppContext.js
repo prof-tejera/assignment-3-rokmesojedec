@@ -47,9 +47,9 @@ const AppProvider = ({ children }) => {
     const [isValidInput, setIsValidInput] = useState(false);
     const [isLastTimer, setIsLastTimer] = useState(false);
     const [queueBackup, setQueueBackup] = useState([]);
-    const [triggerPopQueue, setTriggerPopQueue] = useState(0);
     const [queueDuration, setQueueDuration] = useState({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
 
+    // Adds workout to queue
     const addWorkout = workout => {
         workout.timeString = new Timer({ serializedState: GetSerializedTimerFromState(workout) }).toString();
         let newQueue = [...workoutQueue, workout];
@@ -139,10 +139,6 @@ const AppProvider = ({ children }) => {
         ReactTooltip.rebuild();
     }
 
-    const GetQueueDuration = ()=>{
-        setQueueDuration(CalculateQueueDuration(workoutQueue));
-    }
-
     // Removes workout at index from queue. Triggers updates
     const deleteWorkout = index => {
         if (index > -1 && index < workoutQueue.length) {
@@ -171,10 +167,12 @@ const AppProvider = ({ children }) => {
 
     // Redefine onFinished events for timers
     [CountDownTimer, StopwatchTimer, XYTimer, IntervalTabata].forEach(timer => {
-        timer.onStart = timer => { 
+        // recalculates Workout timer on current timer start
+        timer.onStart = timer => {
             WorkoutTimer.deserialize(CalculateQueueDuration(workoutQueue), true);
         }
-        timer.onReset = timer => { 
+        // recalculates Workout timer on current timer reset
+        timer.onReset = timer => {
             WorkoutTimer.deserialize(CalculateQueueDuration(workoutQueue), true);
         }
         timer.onFinished = () => {
@@ -214,10 +212,7 @@ const AppProvider = ({ children }) => {
             setIsValidInput,
             isLastTimer,
             runAgain,
-            triggerPopQueue,
-            setTriggerPopQueue,
-            queueDuration,
-            GetQueueDuration
+            queueDuration
         }}>
         {children}
     </AppContext.Provider>

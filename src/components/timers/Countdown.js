@@ -15,11 +15,11 @@ const Countdown = () => {
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(10000);
 
-  const start = () => {  setWorkoutStart(true); setDone(false); CountDownTimer.start(false, false); setPaused(true); setEditMode(false); }
+  const start = () => {  setWorkoutStart(true); setDone(false); CountDownTimer.start(false); setPaused(true); setEditMode(false); }
   const pause = () => {  setWorkoutStart(false); CountDownTimer.clear(false); setPaused(false); }
   const reset = () => { CountDownTimer.reset(); setProgress(CountDownTimer.percentComplete);}
   const toggleEditMode = () => { pause(); reset(); setEditMode(!editMode); }
-  const fastForward = () => { CountDownTimer.onFinished(); CountDownTimer.onStart() }//setProgress(CountDownTimer.percentComplete); }
+  const fastForward = () => { CountDownTimer.onFinished(); CountDownTimer.onStart(); setWorkoutStart(true); }
   const runAgain = () => { reset(); setDone(false); }
   const readOnlyMode = workoutStart ? true : workoutEditMode === false ? !editMode : !workoutEditMode;
 
@@ -48,6 +48,7 @@ const Countdown = () => {
     }
   }, [workoutEditMode, CountDownTimer, setIsValidInput, workoutStart])
 
+  // auto start timer, when startNextTimer flag is true
   useEffect(() => {
     if (startNextTimer) { CountDownTimer.start(false); setPaused(true); }
   }, [startNextTimer, currentTimer, CountDownTimer])
