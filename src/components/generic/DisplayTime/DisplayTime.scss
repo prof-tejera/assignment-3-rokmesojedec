@@ -1,0 +1,26 @@
+.time-components {
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+    .timer-font {
+        font-size: 2rem;
+    }
+
+    &.small {
+        .time-component {
+            width: 2rem;
+            div, .timer-input {
+                width: 2rem;
+            }
+            &.colon {
+                margin-left: 1rem;
+                &::before {
+                    left: -0.5rem !important;
+                }
+            }
+        }
+        .timer-font {
+            font-size: 1.5rem;
+        }
+    }
+}

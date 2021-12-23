@@ -1,0 +1,16 @@
+.timer-input {
+    background: none;
+    border: none;
+    border-bottom: 2px solid var(--gray-6-color);
+    display: inline-block;
+    padding:0;
+    margin: 0;
+    color: var(--timer-font-color);
+    width: 3rem;
+    text-align: center;
+    font-family: var(--primary-font) ;
+
+    &:focus{
+        outline: none;
+    }
+}
